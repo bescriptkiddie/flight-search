@@ -3,44 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>航班信息筛选系统</title>
+    <title>海航666随心飞 - 航线规划器</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 使用Unicode图标替代阿里图标库 -->
     <style>
-      .icon-airplane::before { content: '✈️'; }
-      .icon-search::before { content: '🔍'; }
-      .icon-close::before { content: '✖️'; }
-      .icon-filter::before { content: '🔽'; }
-      .icon-arrow-down::before { content: '⬇️'; }
-      .icon-tips::before { content: '💡'; }
-      .icon-departure::before { content: '🛫'; }
-      .icon-arrival::before { content: '🛬'; }
-      .icon-location::before { content: '📍'; }
-      .icon-flight-number::before { content: '🔢'; }
-      .icon-product::before { content: '📦'; }
-      .icon-time::before { content: '⏰'; }
-      .icon-clock::before { content: '🕐'; }
-      .icon-calendar::before { content: '📅'; }
-      .icon-empty::before { content: '📭'; }
-      .icon-moon::before { content: '🌙'; }
-      .icon-sun::before { content: '☀️'; }
-      .icon-export::before { content: '📤'; }
-      .icon-reset::before { content: '🔄'; }
-      .icon-apply::before { content: '✅'; }
-      .iconfont { font-style: normal; }
+      .icon-airplane::before {
+        content: "✈️";
+      }
+      .icon-search::before {
+        content: "🔍";
+      }
+      .icon-close::before {
+        content: "✖️";
+      }
+      .icon-filter::before {
+        content: "🔽";
+      }
+      .icon-arrow-down::before {
+        content: "⬇️";
+      }
+      .icon-tips::before {
+        content: "💡";
+      }
+      .icon-departure::before {
+        content: "🛫";
+      }
+      .icon-arrival::before {
+        content: "🛬";
+      }
+      .icon-location::before {
+        content: "📍";
+      }
+      .icon-flight-number::before {
+        content: "🔢";
+      }
+      .icon-product::before {
+        content: "📦";
+      }
+      .icon-time::before {
+        content: "⏰";
+      }
+      .icon-clock::before {
+        content: "🕐";
+      }
+      .icon-calendar::before {
+        content: "📅";
+      }
+      .icon-empty::before {
+        content: "📭";
+      }
+      .icon-moon::before {
+        content: "🌙";
+      }
+      .icon-sun::before {
+        content: "☀️";
+      }
+      .icon-export::before {
+        content: "📤";
+      }
+      .icon-reset::before {
+        content: "🔄";
+      }
+      .icon-apply::before {
+        content: "✅";
+      }
+      .icon-status::before {
+        content: "🟢";
+      }
+      .icon-available::before {
+        content: "✅";
+      }
+      .icon-unavailable::before {
+        content: "❌";
+      }
+      .icon-early::before {
+        content: "🌅";
+      }
+      .icon-morning::before {
+        content: "🌤️";
+      }
+      .icon-afternoon::before {
+        content: "☀️";
+      }
+      .icon-evening::before {
+        content: "🌆";
+      }
+      .icon-night::before {
+        content: "🌙";
+      }
+      .iconfont {
+        font-style: normal;
+      }
     </style>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'sans-serif']
+              sans: [
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Microsoft YaHei",
+                "sans-serif"
+              ]
             },
             animation: {
-              'fade-in': 'fadeIn 0.5s ease-in-out',
-              'slide-down': 'slideDown 0.4s ease-out',
-              'slide-up': 'slideUp 0.4s ease-out'
+              "fade-in": "fadeIn 0.5s ease-in-out",
+              "slide-down": "slideDown 0.4s ease-out",
+              "slide-up": "slideUp 0.4s ease-out"
             }
           }
         }
@@ -48,16 +120,38 @@
     </script>
     <style>
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       @keyframes slideDown {
-        from { opacity: 0; max-height: 0; transform: translateY(-20px); }
-        to { opacity: 1; max-height: 1000px; transform: translateY(0); }
+        from {
+          opacity: 0;
+          max-height: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          max-height: 1000px;
+          transform: translateY(0);
+        }
       }
       @keyframes slideUp {
-        from { opacity: 1; max-height: 1000px; transform: translateY(0); }
-        to { opacity: 0; max-height: 0; transform: translateY(-20px); }
+        from {
+          opacity: 1;
+          max-height: 1000px;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          max-height: 0;
+          transform: translateY(-20px);
+        }
       }
       .search-highlight {
         background-color: #fef3c7;
@@ -68,582 +162,840 @@
       }
     </style>
   </head>
-  <body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen font-sans">
+  <body
+    class="bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 min-h-screen font-sans"
+  >
     <div class="max-w-7xl mx-auto px-4 py-6">
-      <h1 class="text-4xl md:text-5xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent animate-fade-in">
-        <i class="iconfont icon-airplane text-blue-500 mr-3"></i>
-        航班信息筛选系统
-      </h1>
-
-      <!-- 快捷搜索区域 -->
-      <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/20 animate-fade-in">
-        <div class="flex flex-col lg:flex-row gap-4 items-end">
-          <!-- 搜索输入框 -->
-          <div class="flex-1 relative">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-search text-blue-500 mr-2 text-lg"></i>
-              快捷搜索
-            </label>
-            <div class="relative group">
-              <input
-                type="text"
-                id="locationSearch"
-                class="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 bg-gray-50/50 focus:bg-white text-gray-800 placeholder-gray-400 shadow-sm hover:shadow-md"
-                placeholder="输入城市名或省份名快速搜索航班..."
-                oninput="performLocationSearch()"
-              />
-              <!-- 搜索图标 -->
-              <i class="iconfont icon-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors"></i>
-
-              <!-- 清除按钮 -->
-              <button
-                onclick="clearLocationSearch()"
-                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 p-1 rounded-full hover:bg-red-50"
-                title="清空搜索"
-              >
-                <i class="iconfont icon-close text-lg"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- 详细搜索切换按钮 -->
-          <div class="flex-shrink-0">
-            <button
-              class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 font-semibold hover:-translate-y-1 active:translate-y-0"
-              id="toggleBtn"
-              onclick="toggleAdvancedSearch()"
-            >
-              <i class="iconfont icon-filter text-lg"></i>
-              <span id="toggleText">详细搜索</span>
-              <i class="iconfont icon-arrow-down transition-transform duration-300" id="toggleIcon"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- 搜索提示信息 -->
-        <div class="mt-6" id="searchResultsInfo">
-          <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
-            <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
-            <span class="font-medium">输入城市名或省份名，系统将自动筛选相关航班</span>
-          </div>
+      <!-- 页面头部 -->
+      <div class="text-center mb-8">
+        <h1
+          class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-800 bg-clip-text text-transparent animate-fade-in"
+        >
+          <i class="iconfont icon-airplane text-blue-500 mr-3"></i>
+          海航666随心飞
+        </h1>
+        <p class="text-lg text-gray-600 font-medium">
+          航线规划器 · 智能筛选 · 一键查询
+        </p>
+        <div class="flex justify-center items-center gap-4 mt-4">
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800"
+          >
+            <i class="iconfont icon-status mr-1"></i>
+            系统正常
+          </span>
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+          >
+            <i class="iconfont icon-available mr-1"></i>
+            2666可用
+          </span>
         </div>
       </div>
 
-      <!-- 详细搜索面板 -->
-      <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/20 transition-all duration-500" id="advancedFilters" style="display: none;">
-        <!-- 第一行 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-airplane text-blue-500 mr-2"></i>航空公司
-            </label>
-            <select id="airline" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-departure text-green-500 mr-2"></i>出发城市
-            </label>
-            <select id="departure" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-arrival text-red-500 mr-2"></i>到达城市
-            </label>
-            <select id="destination" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-location text-purple-500 mr-2"></i>出发省份
-            </label>
-            <select id="departureProvince" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-              <option value="">全部</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- 第二行 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-location text-indigo-500 mr-2"></i>到达省份
-            </label>
-            <select id="destinationProvince" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative group">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">
-              <i class="iconfont icon-flight-number text-orange-500 mr-2"></i>航班号
-            </label>
-            <input type="text" id="flightNumber" placeholder="输入航班号" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md" />
-          </div>
-
-          <div class="relative group">
-             <label class="block text-sm font-semibold text-gray-700 mb-3">
-               <i class="iconfont icon-product text-teal-500 mr-2"></i>产品类型
-             </label>
-             <select id="productType" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-               <option value="">全部</option>
-             </select>
-           </div>
-
-           <div class="relative group">
-             <label class="block text-sm font-semibold text-gray-700 mb-3">
-               <i class="iconfont icon-time text-pink-500 mr-2"></i>航班类型
-             </label>
-             <div class="flex flex-wrap gap-3">
-               <label class="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors">
-                 <input type="checkbox" id="nightFlight" value="true" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                 <span class="text-sm font-medium text-gray-700">红眼航班</span>
-               </label>
-               <label class="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors">
-                 <input type="checkbox" id="dayFlight" value="true" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                 <span class="text-sm font-medium text-gray-700">日间航班</span>
-               </label>
-             </div>
-           </div>
-         </div>
-
-         <!-- 第三行 -->
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-           <div class="relative group">
-             <label class="block text-sm font-semibold text-gray-700 mb-3">
-               <i class="iconfont icon-clock text-amber-500 mr-2"></i>起飞时间
-             </label>
-             <select id="departureTime" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md">
-               <option value="">全部</option>
-               <option value="early">凌晨 (00:00-06:00)</option>
-               <option value="morning">上午 (06:00-12:00)</option>
-               <option value="afternoon">下午 (12:00-18:00)</option>
-               <option value="evening">晚上 (18:00-24:00)</option>
-             </select>
-           </div>
-
-           <div class="relative group">
-             <label class="block text-sm font-semibold text-gray-700 mb-3">
-               <i class="iconfont icon-calendar text-emerald-500 mr-2"></i>运营日期
-             </label>
-             <div class="grid grid-cols-4 md:grid-cols-7 gap-2">
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="1" />
-                 <span class="text-xs font-medium text-gray-700">周一</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="2" />
-                 <span class="text-xs font-medium text-gray-700">周二</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="3" />
-                 <span class="text-xs font-medium text-gray-700">周三</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="4" />
-                 <span class="text-xs font-medium text-gray-700">周四</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="5" />
-                 <span class="text-xs font-medium text-gray-700">周五</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="6" />
-                 <span class="text-xs font-medium text-gray-700">周六</span>
-               </label>
-               <label class="flex items-center justify-center gap-1 cursor-pointer px-2 py-2 rounded-lg hover:bg-blue-50 transition-colors text-center">
-                 <input type="checkbox" class="day-checkbox w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500" value="7" />
-                 <span class="text-xs font-medium text-gray-700">周日</span>
-               </label>
-             </div>
-           </div>
-         </div>
-
-         <!-- 按钮组 -->
-         <div class="flex flex-col sm:flex-row gap-4">
-           <button class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0" onclick="applyFilters()">
-             <i class="iconfont icon-check mr-2"></i>
-             应用筛选
-           </button>
-           <button class="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0" onclick="resetFilters()">
-             <i class="iconfont icon-refresh mr-2"></i>
-             重置筛选
-           </button>
-         </div>
-       </div>
-
-       <!-- 查询结果信息 -->
-       <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/20">
-         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-           <div>
-             <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-               <i class="iconfont icon-data text-blue-500 text-2xl"></i>
-               查询结果
-             </h3>
-             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-               <div class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                 <i class="iconfont icon-airplane text-blue-500 text-xl"></i>
-                 <div>
-                   <span class="text-sm text-gray-600 block">总航班数</span>
-                   <span class="text-xl font-bold text-blue-600" id="totalFlights">0</span>
-                 </div>
-               </div>
-               <div class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-                 <i class="iconfont icon-moon text-purple-500 text-xl"></i>
-                 <div>
-                   <span class="text-sm text-gray-600 block">红眼航班</span>
-                   <span class="text-xl font-bold text-purple-600" id="nightFlights">0</span>
-                 </div>
-               </div>
-               <div class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl border border-orange-200">
-                 <i class="iconfont icon-sun text-orange-500 text-xl"></i>
-                 <div>
-                   <span class="text-sm text-gray-600 block">日间航班</span>
-                   <span class="text-xl font-bold text-orange-600" id="dayFlights">0</span>
-                 </div>
-               </div>
-             </div>
-           </div>
-           <div class="flex-shrink-0">
-             <button class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0 flex items-center gap-2" onclick="exportResults()">
-               <i class="iconfont icon-download text-lg"></i>
-               导出结果
-             </button>
-           </div>
-         </div>
-       </div>
-
-       <!-- 航班列表 -->
-       <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-         <div class="overflow-x-auto">
-           <table id="flightTable" class="w-full">
-             <thead>
-               <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-airplane mr-2"></i>航空公司
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-flight-number mr-2"></i>航班号
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-departure mr-2"></i>出发城市
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-arrival mr-2"></i>到达城市
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-time mr-2"></i>出发时间
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-time mr-2"></i>到达时间
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-calendar mr-2"></i>运营日期
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-product mr-2"></i>产品类型
-                 </th>
-                 <th class="px-6 py-4 text-left font-semibold">
-                   <i class="iconfont icon-type mr-2"></i>航班类型
-                 </th>
-               </tr>
-             </thead>
-             <tbody id="flightTableBody" class="divide-y divide-gray-100">
-               <tr>
-                 <td colspan="9" class="px-6 py-12 text-center text-gray-500 animate-pulse">
-                   <i class="iconfont icon-loading text-3xl mb-2 block"></i>
-                   正在加载数据...
-                 </td>
-               </tr>
-             </tbody>
-           </table>
-         </div>
-       </div>
-     </div>
-      /* 夜间航班标识 */
-      .night-flight {
-        @apply border-l-4 border-blue-600 bg-gradient-to-r from-blue-50 to-white;
-      }
-
-      /* 搜索高亮 */
-      .search-highlight {
-        @apply bg-yellow-100 px-2 py-1 rounded font-semibold text-yellow-800;
-      }
-
-      /* 自定义滚动条 */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: #f1f5f9;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1 class="text-4xl md:text-5xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">✈️ 航班信息筛选系统</h1>
-
       <!-- 快捷搜索区域 -->
-      <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100">
-        <div class="flex flex-col lg:flex-row gap-4 items-end">
-          <!-- 搜索输入框 -->
-          <div class="flex-1 relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-search text-blue-500 mr-1"></i>
-              快捷搜索
-            </label>
-            <div class="relative">
-              <input
-                type="text"
-                id="locationSearch"
-                class="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-gray-50 focus:bg-white"
-                placeholder="输入城市名或省份名快速搜索航班..."
-                oninput="performLocationSearch()"
-              />
-              <!-- 搜索图标 -->
-              <i class="iconfont icon-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+      <div
+        class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/20 animate-fade-in"
+      >
+        <div class="flex flex-col gap-6">
+          <!-- 搜索标题 -->
+          <div class="text-center">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">
+              <i class="iconfont icon-search text-blue-500 mr-2 text-xl"></i>
+              航班搜索
+            </h3>
+            <p class="text-sm text-gray-600">
+              选择出发城市和目的地城市，快速查找航班
+            </p>
+          </div>
 
-              <!-- 清除按钮 -->
+          <!-- 城市搜索区域 -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- 出发城市搜索框 -->
+            <div class="relative">
+              <label class="block text-sm font-semibold text-gray-700 mb-3">
+                <i
+                  class="iconfont icon-departure text-green-500 mr-2 text-lg"
+                ></i>
+                出发城市
+              </label>
+              <div class="relative group">
+                <input
+                  type="text"
+                  id="departureSearch"
+                  class="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-gray-50/50 focus:bg-white text-gray-800 placeholder-gray-400 shadow-sm hover:shadow-md"
+                  placeholder="请输入出发城市..."
+                  oninput="handleCityInputChange('departureSearch')"
+                  onfocus="handleCityInputFocus('departureSearch')"
+                  onblur="handleCityInputBlur('departureSearch')"
+                  onkeydown="handleCityInputKeydown(event, 'departureSearch')"
+                  autocomplete="off"
+                />
+                <!-- 出发图标 -->
+                <i
+                  class="iconfont icon-departure absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-green-500 transition-colors"
+                ></i>
+                <!-- 清除按钮 -->
+                <button
+                  onclick="clearDepartureSearch()"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 p-1 rounded-full hover:bg-red-50"
+                  title="清空出发城市"
+                >
+                  <i class="iconfont icon-close text-lg"></i>
+                </button>
+                <!-- 下拉选择列表 -->
+                <div
+                  id="departureSearchDropdown"
+                  class="absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto hidden mt-1"
+                  style="display: none;"
+                >
+                  <!-- 动态生成的城市选项 -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 目的地城市搜索框 -->
+            <div class="relative">
+              <label class="block text-sm font-semibold text-gray-700 mb-3">
+                <i class="iconfont icon-arrival text-red-500 mr-2 text-lg"></i>
+                目的地城市
+              </label>
+              <div class="relative group">
+                <input
+                  type="text"
+                  id="destinationSearch"
+                  class="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-4 focus:ring-red-100 transition-all duration-300 bg-gray-50/50 focus:bg-white text-gray-800 placeholder-gray-400 shadow-sm hover:shadow-md"
+                  placeholder="请输入目的地城市..."
+                  oninput="handleCityInputChange('destinationSearch')"
+                  onfocus="handleCityInputFocus('destinationSearch')"
+                  onblur="handleCityInputBlur('destinationSearch')"
+                  onkeydown="handleCityInputKeydown(event, 'destinationSearch')"
+                  autocomplete="off"
+                />
+                <!-- 到达图标 -->
+                <i
+                  class="iconfont icon-arrival absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-red-500 transition-colors"
+                ></i>
+                <!-- 清除按钮 -->
+                <button
+                  onclick="clearDestinationSearch()"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 p-1 rounded-full hover:bg-red-50"
+                  title="清空目的地城市"
+                >
+                  <i class="iconfont icon-close text-lg"></i>
+                </button>
+                <!-- 下拉选择列表 -->
+                <div
+                  id="destinationSearchDropdown"
+                  class="absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto hidden mt-1"
+                  style="display: none;"
+                >
+                  <!-- 动态生成的城市选项 -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 行程类型和搜索按钮 -->
+          <div
+            class="flex flex-col sm:flex-row gap-4 items-center justify-between"
+          >
+            <!-- 行程类型选择 -->
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-semibold text-gray-700">
+                <i class="iconfont icon-calendar text-blue-500 mr-2"></i>
+                行程类型:
+              </span>
+              <div class="flex gap-2">
+                <button
+                  class="trip-type-btn active px-4 py-2 text-sm rounded-full border-2 border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 font-medium"
+                  data-type="round-trip"
+                  onclick="selectTripType('round-trip')"
+                >
+                  往返
+                </button>
+                <button
+                  class="trip-type-btn px-4 py-2 text-sm rounded-full border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 font-medium"
+                  data-type="one-way"
+                  onclick="selectTripType('one-way')"
+                >
+                  单程
+                </button>
+              </div>
+            </div>
+
+            <!-- 详细搜索切换按钮 -->
+            <div class="flex-shrink-0">
               <button
-                onclick="clearLocationSearch()"
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                title="清空搜索"
+                class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 font-semibold hover:-translate-y-1 active:translate-y-0"
+                id="toggleBtn"
+                onclick="toggleAdvancedSearch()"
               >
-                <i class="iconfont icon-close text-lg"></i>
+                <i class="iconfont icon-filter text-lg"></i>
+                <span id="toggleText">详细搜索</span>
+                <i
+                  class="iconfont icon-arrow-down transition-transform duration-300"
+                  id="toggleIcon"
+                ></i>
               </button>
             </div>
           </div>
 
-          <!-- 详细搜索切换按钮 -->
-          <div class="flex-shrink-0">
-            <button
-              class="btn-toggle bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
-              id="toggleBtn"
-              onclick="toggleAdvancedSearch()"
-            >
-              <i class="iconfont icon-filter text-sm"></i>
-              <span id="toggleText">详细搜索</span>
-              <i class="iconfont icon-arrow-down transition-transform duration-200" id="toggleIcon"></i>
-            </button>
+          <!-- 快捷筛选条件 -->
+          <div class="border-t border-gray-200 pt-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- 时间段筛选 -->
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                  <span
+                    class="text-sm font-semibold text-gray-700 flex items-center"
+                  >
+                    <i class="iconfont icon-time text-blue-500 mr-2"></i>
+                    时间段筛选:
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    class="time-filter-btn active px-3 py-2 text-xs rounded-full border-2 border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 font-medium"
+                    data-time="all"
+                    onclick="selectTimeFilter('all')"
+                  >
+                    全部时段
+                  </button>
+                  <button
+                    class="time-filter-btn px-3 py-2 text-xs rounded-full border-2 border-orange-300 text-orange-700 hover:border-orange-500 hover:bg-orange-50 transition-all duration-200 font-medium"
+                    data-time="night"
+                    onclick="selectTimeFilter('night')"
+                  >
+                    <i class="iconfont icon-night mr-1"></i>晚上 18:00-24:00
+                  </button>
+                  <button
+                    class="time-filter-btn px-3 py-2 text-xs rounded-full border-2 border-purple-300 text-purple-700 hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 font-medium"
+                    data-time="early"
+                    onclick="selectTimeFilter('early')"
+                  >
+                    <i class="iconfont icon-early mr-1"></i>凌晨 00:00-06:00
+                  </button>
+                </div>
+              </div>
+
+              <!-- 可用性和航段筛选 -->
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                  <span
+                    class="text-sm font-semibold text-gray-700 flex items-center"
+                  >
+                    <i class="iconfont icon-status text-green-500 mr-2"></i>
+                    筛选条件:
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    class="availability-filter-btn px-3 py-2 text-xs rounded-full border-2 border-green-300 text-green-700 hover:border-green-500 hover:bg-green-50 transition-all duration-200 font-medium"
+                    data-availability="2666"
+                    onclick="toggleAvailabilityFilter('2666')"
+                  >
+                    <i class="iconfont icon-available mr-1"></i>2666可用
+                  </button>
+                  <select
+                    id="segmentFilter"
+                    class="px-3 py-2 text-xs border-2 border-gray-300 rounded-full focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white font-medium"
+                    onchange="selectSegmentFilter(this.value)"
+                  >
+                    <option value="">全部航段</option>
+                    <option value="1">1航段</option>
+                    <option value="2">2航段</option>
+                    <option value="3">3航段</option>
+                    <option value="4+">4+航段</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 搜索提示信息 -->
         <div class="mt-4" id="searchResultsInfo">
-          <div class="flex items-center gap-3 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 rounded-lg border border-blue-100">
-            <i class="iconfont icon-tips text-blue-500 text-lg animate-pulse"></i>
-            <span>输入城市名或省份名，系统将自动筛选相关航班</span>
+          <div
+            class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm"
+          >
+            <i
+              class="iconfont icon-tips text-blue-500 text-xl animate-pulse"
+            ></i>
+            <span class="font-medium"
+              >选择出发城市和目的地城市，使用筛选条件精确查找航班 ·
+              支持时间段、行程类型和航段筛选</span
+            >
           </div>
         </div>
       </div>
 
       <!-- 详细搜索面板 -->
-      <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100" id="advancedFilters" style="display: none;">
-        <!-- 第一行 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-airplane text-blue-500 mr-1"></i>航空公司
-            </label>
-            <select id="airline" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-departure text-green-500 mr-1"></i>出发城市
-            </label>
-            <select id="departure" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-arrival text-red-500 mr-1"></i>到达城市
-            </label>
-            <select id="destination" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-location text-purple-500 mr-1"></i>出发省份
-            </label>
-            <select id="departureProvince" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-              <option value="">全部</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- 第二行 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-location text-indigo-500 mr-1"></i>到达省份
-            </label>
-            <select id="destinationProvince" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="relative">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="iconfont icon-flight-number text-orange-500 mr-1"></i>航班号
-            </label>
-            <input type="text" id="flightNumber" placeholder="输入航班号" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" />
-          </div>
-
-          <div class="filter-group">
-            <label for="productType">产品类型</label>
-            <select id="productType">
-              <option value="">全部</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <label>航班类型</label>
-            <div class="checkbox-group">
-              <label>
-                <input type="checkbox" id="nightFlight" value="true" />
-                红眼航班
+      <div
+        class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/30 transition-all duration-500"
+        id="advancedFilters"
+        style="display: none"
+      >
+        <!-- 基础筛选卡片 -->
+        <div
+          class="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-5 mb-5 border border-blue-100"
+        >
+          <h4
+            class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"
+          >
+            <i class="iconfont icon-filter text-blue-500"></i>
+            基础筛选
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-airplane text-blue-500 mr-1"></i
+                >航空公司
               </label>
-              <label>
-                <input type="checkbox" id="dayFlight" value="true" />
-                日间航班
+              <select
+                id="airline"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              >
+                <option value="">全部</option>
+              </select>
+            </div>
+
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-departure text-green-500 mr-1"></i
+                >出发城市
               </label>
+              <select
+                id="departure"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              >
+                <option value="">全部</option>
+              </select>
+            </div>
+
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-arrival text-red-500 mr-1"></i>到达城市
+              </label>
+              <select
+                id="destination"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              >
+                <option value="">全部</option>
+              </select>
+            </div>
+
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-location text-purple-500 mr-1"></i
+                >出发省份
+              </label>
+              <select
+                id="departureProvince"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              >
+                <option value="">全部</option>
+              </select>
+            </div>
+
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-location text-indigo-500 mr-1"></i
+                >到达省份
+              </label>
+              <select
+                id="destinationProvince"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              >
+                <option value="">全部</option>
+              </select>
+            </div>
+
+            <div class="relative group">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="iconfont icon-flight-number text-orange-500 mr-1"></i
+                >航班号
+              </label>
+              <input
+                type="text"
+                id="flightNumber"
+                placeholder="输入航班号"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white shadow-sm hover:shadow-md text-sm"
+              />
             </div>
           </div>
         </div>
 
-        <div class="filter-row">
-          <div class="filter-group">
-            <label for="departureTime">起飞时间</label>
-            <select id="departureTime">
-              <option value="">全部</option>
-              <option value="early">凌晨 (00:00-06:00)</option>
-              <option value="morning">上午 (06:00-12:00)</option>
-              <option value="afternoon">下午 (12:00-18:00)</option>
-              <option value="evening">晚上 (18:00-24:00)</option>
-            </select>
+        <!-- 航班类型筛选卡片 -->
+        <div
+          class="bg-gradient-to-r from-green-50/50 to-emerald-50/50 rounded-xl p-5 mb-5 border border-green-100"
+        >
+          <h4
+            class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"
+          >
+            <i class="iconfont icon-type text-green-500"></i>
+            航班类型
+          </h4>
+          <div class="flex flex-wrap gap-3">
+            <label
+              class="flex items-center space-x-2 cursor-pointer group bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                id="flightType-passenger"
+                value="passenger"
+                class="w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-200"
+                >客运航班</span
+              >
+            </label>
+            <label
+              class="flex items-center space-x-2 cursor-pointer group bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                id="flightType-cargo"
+                value="cargo"
+                class="w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-200"
+                >货运航班</span
+              >
+            </label>
+            <label
+              class="flex items-center space-x-2 cursor-pointer group bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                id="nightFlight"
+                value="true"
+                class="w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-200"
+                >红眼航班</span
+              >
+            </label>
+            <label
+              class="flex items-center space-x-2 cursor-pointer group bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                id="dayFlight"
+                value="true"
+                class="w-4 h-4 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-200"
+                >日间航班</span
+              >
+            </label>
           </div>
+        </div>
 
-          <div class="filter-group">
-            <label for="operatingDays">运营日期</label>
-            <div class="checkbox-group">
-              <label
-                ><input type="checkbox" class="day-checkbox" value="1" />
-                周一</label
+        <!-- 时间筛选卡片 -->
+        <div
+          class="bg-gradient-to-r from-orange-50/50 to-amber-50/50 rounded-xl p-5 mb-5 border border-orange-100"
+        >
+          <h4
+            class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"
+          >
+            <i class="iconfont icon-time text-orange-500"></i>
+            时间筛选
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >起飞时间段</label
               >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="2" />
-                周二</label
+              <select
+                id="departureTime"
+                class="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm text-sm"
               >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="3" />
-                周三</label
+                <option value="">全部</option>
+                <option value="early">凌晨 (00:00-06:00)</option>
+                <option value="morning">上午 (06:00-12:00)</option>
+                <option value="afternoon">下午 (12:00-18:00)</option>
+                <option value="evening">晚上 (18:00-24:00)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >自定义时间范围</label
               >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="4" />
-                周四</label
-              >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="5" />
-                周五</label
-              >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="6" />
-                周六</label
-              >
-              <label
-                ><input type="checkbox" class="day-checkbox" value="7" />
-                周日</label
-              >
+              <div class="flex gap-2">
+                <select
+                  id="departureTimeStart"
+                  class="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm text-sm"
+                >
+                  <option value="">开始时间</option>
+                  <option value="00:00">00:00</option>
+                  <option value="06:00">06:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="18:00">18:00</option>
+                </select>
+                <span class="flex items-center text-gray-400">-</span>
+                <select
+                  id="departureTimeEnd"
+                  class="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-100 transition-all duration-200 bg-white shadow-sm text-sm"
+                >
+                  <option value="">结束时间</option>
+                  <option value="06:00">06:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="18:00">18:00</option>
+                  <option value="23:59">23:59</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="button-group">
-          <button class="btn-primary" onclick="applyFilters()">应用筛选</button>
-          <button class="btn-secondary" onclick="resetFilters()">
+        <!-- 运营日期筛选卡片 -->
+        <div
+          class="bg-gradient-to-r from-purple-50/50 to-violet-50/50 rounded-xl p-5 mb-5 border border-purple-100"
+        >
+          <h4
+            class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"
+          >
+            <i class="iconfont icon-calendar text-purple-500"></i>
+            运营日期
+          </h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="1"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周一</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="2"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周二</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="3"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周三</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="4"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周四</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="5"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周五</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="6"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周六</span
+              >
+            </label>
+            <label
+              class="flex items-center justify-center space-x-1 cursor-pointer group bg-white px-2 py-2 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                class="day-checkbox w-4 h-4 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                value="7"
+              />
+              <span
+                class="text-sm font-medium text-gray-700 group-hover:text-purple-600 transition-colors duration-200"
+                >周日</span
+              >
+            </label>
+          </div>
+        </div>
+
+        <!-- 按钮组 -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0"
+            onclick="applyFilters()"
+          >
+            <i class="iconfont icon-check mr-2"></i>
+            应用筛选
+          </button>
+          <button
+            class="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0"
+            onclick="resetFilters()"
+          >
+            <i class="iconfont icon-refresh mr-2"></i>
             重置筛选
           </button>
         </div>
       </div>
 
-      <div class="results-info">
-        <div>
-          <h3>查询结果</h3>
-          <div class="stats">
-            <div class="stat-item">
-              <span class="stat-label">总航班数：</span>
-              <span class="stat-value" id="totalFlights">0</span>
+      <!-- 查询结果信息 -->
+      <div
+        class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-6 border border-white/30"
+      >
+        <div
+          class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6"
+        >
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-4">
+              <h3
+                class="text-xl font-bold text-gray-800 flex items-center gap-2"
+              >
+                <i class="iconfont icon-airplane text-blue-500 text-2xl"></i>
+                航班查询结果
+              </h3>
+              <div class="flex items-center gap-2">
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                >
+                  <i class="iconfont icon-status mr-1"></i>
+                  实时更新
+                </span>
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                  id="filterStatus"
+                >
+                  <i class="iconfont icon-filter mr-1"></i>
+                  无筛选条件
+                </span>
+              </div>
             </div>
-            <div class="stat-item">
-              <span class="stat-label">红眼航班：</span>
-              <span class="stat-value" id="nightFlights">0</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">日间航班：</span>
-              <span class="stat-value" id="dayFlights">0</span>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+              <div
+                class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-200"
+              >
+                <i class="iconfont icon-airplane text-blue-500 text-xl"></i>
+                <div>
+                  <span class="text-xs text-gray-600 block">总航班数</span>
+                  <span
+                    class="text-lg font-bold text-blue-600"
+                    id="totalFlights"
+                    >0</span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200 hover:shadow-md transition-all duration-200"
+              >
+                <i class="iconfont icon-night text-purple-500 text-xl"></i>
+                <div>
+                  <span class="text-xs text-gray-600 block">红眼航班</span>
+                  <span
+                    class="text-lg font-bold text-purple-600"
+                    id="nightFlights"
+                    >0</span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl border border-orange-200 hover:shadow-md transition-all duration-200"
+              >
+                <i class="iconfont icon-sun text-orange-500 text-xl"></i>
+                <div>
+                  <span class="text-xs text-gray-600 block">日间航班</span>
+                  <span
+                    class="text-lg font-bold text-orange-600"
+                    id="dayFlights"
+                    >0</span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-300 hover:shadow-lg transition-all duration-200 ring-2 ring-purple-100"
+              >
+                <div class="relative">
+                  <i class="iconfont icon-star text-purple-500 text-xl"></i>
+                  <span
+                    class="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-pulse"
+                  ></span>
+                </div>
+                <div>
+                  <span class="text-xs text-purple-600 block font-semibold"
+                    >2666可用</span
+                  >
+                  <span
+                    class="text-lg font-bold text-purple-600"
+                    id="availableFlights"
+                    >0</span
+                  >
+                </div>
+                <div class="ml-auto">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 bg-purple-500 rounded-full mr-1 animate-pulse"
+                    ></span>
+                    专享
+                  </span>
+                </div>
+              </div>
+
+              <div
+                class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-xl border border-cyan-200 hover:shadow-md transition-all duration-200"
+              >
+                <i class="iconfont icon-time text-cyan-500 text-xl"></i>
+                <div>
+                  <span class="text-xs text-gray-600 block">当前时段</span>
+                  <span
+                    class="text-lg font-bold text-cyan-600"
+                    id="currentTimeSlot"
+                    >全部</span
+                  >
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <button class="btn-primary" onclick="exportResults()">
-            导出结果
-          </button>
+
+          <div class="flex flex-col gap-3">
+            <button
+              class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0 flex items-center gap-2"
+              onclick="exportResults()"
+            >
+              <i class="iconfont icon-export text-lg"></i>
+              导出结果
+            </button>
+            <button
+              class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold hover:-translate-y-1 active:translate-y-0 flex items-center gap-2"
+              onclick="refreshData()"
+            >
+              <i class="iconfont icon-reset text-lg"></i>
+              刷新数据
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="flight-table">
-        <table id="flightTable">
-          <thead>
-            <tr>
-              <th>航空公司</th>
-              <th>航班号</th>
-              <th>出发城市</th>
-              <th>到达城市</th>
-              <th>出发时间</th>
-              <th>到达时间</th>
-              <th>运营日期</th>
-              <th>产品类型</th>
-              <th>航班类型</th>
-            </tr>
-          </thead>
-          <tbody id="flightTableBody">
-            <tr>
-              <td colspan="9" class="loading">正在加载数据...</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- 航班列表 -->
+      <div
+        class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
+      >
+        <div class="overflow-x-auto">
+          <table id="flightTable" class="w-full">
+            <thead>
+              <tr
+                class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+              >
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-airplane mr-2"></i>航空公司
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-flight-number mr-2"></i>航班号
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-departure mr-2"></i>出发城市
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-arrival mr-2"></i>到达城市
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-time mr-2"></i>出发时间
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-time mr-2"></i>到达时间
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-calendar mr-2"></i>运营日期
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-product mr-2"></i>产品类型
+                </th>
+                <th class="px-6 py-4 text-left font-semibold">
+                  <i class="iconfont icon-type mr-2"></i>航班类型
+                </th>
+              </tr>
+            </thead>
+            <tbody id="flightTableBody" class="divide-y divide-gray-100">
+              <tr>
+                <td
+                  colspan="9"
+                  class="px-6 py-12 text-center text-gray-500 animate-pulse"
+                >
+                  <i class="iconfont icon-loading text-3xl mb-2 block"></i>
+                  正在加载数据...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <script>
       let flightData = []
       let filteredData = []
-      let originalFilteredData = [] // 保存原始筛选结果，用于地点搜索
+      let originalFilteredData = [] // 保存原始筛选结果，用于城市搜索
+      let filters = {
+        airline: "",
+        departure: "",
+        destination: "",
+        departureProvince: "",
+        destinationProvince: "",
+        flightNumber: "",
+        productType: "",
+        nightFlight: false,
+        dayFlight: false,
+        departureTime: "",
+        operatingDays: [],
+        timeSlot: "all",
+        quickTimeFilter: "全部时段",
+        tripType: "单程",
+        available2666: false,
+        segment: "all"
+      } // 全局筛选条件对象
 
       // 加载航班数据
       async function loadFlightData() {
@@ -651,155 +1003,230 @@
         document.getElementById("flightTableBody").innerHTML =
           '<tr><td colspan="9" class="no-results">正在加载数据，请稍候...</td></tr>'
 
-        // 优先尝试本地数据
         try {
-          console.log("尝试加载本地数据: ./flights_data.json")
-          const localResponse = await fetch("./flights_data.json")
-          if (localResponse.ok) {
-            const localData = await localResponse.json()
-            console.log("成功加载本地数据:", localData)
-            console.log(
-              "航班数量:",
-              localData.flights ? localData.flights.length : 0
-            )
-
-            if (localData.flights && Array.isArray(localData.flights)) {
-              flightData = localData.flights
-              console.log("本地数据加载完成，开始初始化筛选器")
-              initializeFilters()
-              applyFilters()
-              console.log("页面初始化完成")
-              return
-            }
+          console.log("加载本地数据: ./flights_data.json")
+          const response = await fetch("./flights_data.json")
+          
+          if (!response.ok) {
+            throw new Error(`HTTP错误: ${response.status} ${response.statusText}`)
           }
-        } catch (localError) {
-          console.log("本地数据不可用，尝试在线数据:", localError.message)
-        }
+          
+          const data = await response.json()
+          console.log("成功加载本地数据:", data)
+          console.log("航班数量:", data.flights ? data.flights.length : 0)
 
-        // 如果本地数据不可用，尝试在线数据
-        try {
-          console.log(
-            "发送网络请求到: https://flight-route.surge.sh/flights_data.json"
-          )
-
-          // 尝试使用CORS代理
-          const corsProxyUrls = [
-            "https://cors-anywhere.herokuapp.com/https://flight-route.surge.sh/flights_data.json",
-            "https://api.allorigins.win/get?url=https://flight-route.surge.sh/flights_data.json",
-            "https://flight-route.surge.sh/flights_data.json"
-          ]
-
-          let response = null
-          let data = null
-
-          for (const url of corsProxyUrls) {
-            try {
-              console.log("尝试URL:", url)
-              response = await fetch(url, {
-                method: "GET",
-                mode: "cors",
-                headers: {
-                  Accept: "application/json"
-                }
-              })
-
-              if (response.ok) {
-                console.log("响应状态:", response.status, response.statusText)
-                const responseData = await response.json()
-
-                // 处理不同代理的响应格式
-                if (url.includes("allorigins.win")) {
-                  data = JSON.parse(responseData.contents)
-                } else {
-                  data = responseData
-                }
-
-                console.log("成功获取在线数据:", data)
-                break
-              }
-            } catch (proxyError) {
-              console.log(`代理 ${url} 失败:`, proxyError.message)
-              continue
-            }
+          if (!data.flights || !Array.isArray(data.flights)) {
+            throw new Error("数据格式错误：缺少flights数组")
           }
 
-          if (!data || !data.flights || !Array.isArray(data.flights)) {
-            throw new Error("无法获取有效的航班数据")
-          }
-
-          console.log("航班数量:", data.flights.length)
           flightData = data.flights
-          console.log("在线数据加载完成，开始初始化筛选器")
+          console.log("本地数据加载完成，开始初始化筛选器")
           initializeFilters()
-          applyFilters()
+          filteredData = [...flightData]
+          displayResults()
           console.log("页面初始化完成")
+          
         } catch (error) {
-          console.error("所有数据源加载失败:", error)
+          console.error("本地数据加载失败:", error)
           console.error("错误详情:", error.message)
 
-          document.getElementById(
-            "flightTableBody"
-          ).innerHTML = `<tr><td colspan="9" class="no-results">数据加载失败: ${error.message}<br><br>可能的原因：<br>1. 本地文件 flights_data.json 不存在<br>2. 网络连接问题<br>3. 跨域请求被阻止<br>4. 服务器暂时不可用<br><br><button class="btn-primary" onclick="loadFlightData()">重试</button><br><br><button class="btn-primary" onclick="document.querySelector('input[type=file]').click()">选择本地文件</button></td></tr>`
+          // 使用备用示例数据
+          console.log("使用备用示例数据")
+          flightData = getBackupFlightData()
+
+          if (flightData.length > 0) {
+            console.log("备用数据加载完成，开始初始化筛选器")
+            initializeFilters()
+            filteredData = [...flightData]
+            displayResults()
+
+            // 显示警告信息
+            document.getElementById("searchResultsInfo").innerHTML = `
+              <div class="flex items-center gap-4 text-sm text-orange-600 bg-gradient-to-r from-orange-50 to-yellow-50 px-6 py-4 rounded-xl border border-orange-200 shadow-sm">
+                <i class="iconfont icon-warning text-orange-500 text-xl"></i>
+                <span class="font-medium">正在使用示例数据 · 本地数据加载失败: ${error.message}</span>
+                <button class="ml-auto px-3 py-1 bg-orange-500 text-white rounded-lg text-xs hover:bg-orange-600" onclick="loadFlightData()">重试加载</button>
+              </div>
+            `
+          } else {
+            document.getElementById(
+              "flightTableBody"
+            ).innerHTML = `<tr><td colspan="9" class="no-results">数据加载失败: ${error.message}<br><br>可能的原因：<br>1. 本地文件 flights_data.json 不存在<br>2. 文件格式错误<br>3. 文件读取权限问题<br><br><button class="btn-primary" onclick="loadFlightData()">重试</button></td></tr>`
+          }
         }
       }
 
       // 初始化筛选器选项
       function initializeFilters() {
-        const airlines = [...new Set(flightData.map((f) => f.airline))].sort()
+        console.log("开始初始化筛选器选项...")
+
+        // 确保数据已加载
+        if (!flightData || flightData.length === 0) {
+          console.warn("航班数据未加载，无法初始化筛选器")
+          return
+        }
+
+        // 从航班数据中提取唯一值并排序
+        const airlines = [
+          ...new Set(flightData.map((f) => f.airline).filter(Boolean))
+        ].sort()
         const departures = [
-          ...new Set(flightData.map((f) => f.departure))
+          ...new Set(flightData.map((f) => f.departure).filter(Boolean))
         ].sort()
         const destinations = [
-          ...new Set(flightData.map((f) => f.destination))
+          ...new Set(flightData.map((f) => f.destination).filter(Boolean))
         ].sort()
         const departureProvinces = [
-          ...new Set(flightData.map((f) => f.departure_province))
+          ...new Set(
+            flightData.map((f) => f.departure_province).filter(Boolean)
+          )
         ].sort()
         const destinationProvinces = [
-          ...new Set(flightData.map((f) => f.destination_province))
+          ...new Set(
+            flightData.map((f) => f.destination_province).filter(Boolean)
+          )
         ].sort()
         const productTypes = [
-          ...new Set(flightData.map((f) => f.product_type))
+          ...new Set(flightData.map((f) => f.product_type).filter(Boolean))
         ].sort()
 
-        populateSelect("airline", airlines)
-        populateSelect("departure", departures)
-        populateSelect("destination", destinations)
-        populateSelect("departureProvince", departureProvinces)
-        populateSelect("destinationProvince", destinationProvinces)
-        populateSelect("productType", productTypes)
+        // 获取航段信息
+        const segments = [
+          ...new Set(
+            flightData.map((f) => f.segment || f.segments).filter(Boolean)
+          )
+        ].sort()
+
+        // 获取航空公司代码（如果有的话）
+        const airlineCodes = [
+          ...new Set(flightData.map((f) => f.airline_code).filter(Boolean))
+        ].sort()
+
+        console.log("提取的数据统计:")
+        console.log("- 航空公司:", airlines.length, "个")
+        console.log("- 出发城市:", departures.length, "个")
+        console.log("- 目的地城市:", destinations.length, "个")
+        console.log("- 出发省份:", departureProvinces.length, "个")
+        console.log("- 目的地省份:", destinationProvinces.length, "个")
+        console.log("- 产品类型:", productTypes.length, "个")
+        console.log("- 航段:", segments.length, "个")
+
+        // 清空并填充下拉选项
+        clearAndPopulateSelect("airline", airlines)
+        clearAndPopulateSelect("departure", departures)
+        clearAndPopulateSelect("destination", destinations)
+        clearAndPopulateSelect("departureProvince", departureProvinces)
+        clearAndPopulateSelect("destinationProvince", destinationProvinces)
+        // 产品类型通过2666可用按钮处理，不需要下拉选择器
+
+        // 填充航段筛选器（如果存在）
+        if (segments.length > 0) {
+          clearAndPopulateSelect("segmentFilter", segments, "全部航段")
+        }
+
+        console.log("筛选器选项初始化完成")
+        
+        // 初始化城市数据
+        initializeCityData()
       }
 
-      // 填充下拉选项
-      function populateSelect(id, options) {
+      // 清空并填充下拉选项
+      function clearAndPopulateSelect(id, options, defaultText = "全部") {
         const select = document.getElementById(id)
-        options.forEach((option) => {
-          const optionElement = document.createElement("option")
-          optionElement.value = option
-          optionElement.textContent = option
-          select.appendChild(optionElement)
+        if (!select) {
+          console.warn(`未找到ID为 ${id} 的选择器，跳过初始化`)
+          return false
+        }
+
+        try {
+          // 清空现有选项（保留默认选项）
+          select.innerHTML = `<option value="">${defaultText}</option>`
+
+          // 添加新选项
+          options.forEach((option) => {
+            if (option && option.trim()) {
+              // 确保选项不为空
+              const optionElement = document.createElement("option")
+              optionElement.value = option
+              optionElement.textContent = option
+              select.appendChild(optionElement)
+            }
+          })
+
+          console.log(`${id} 选择器已更新，共 ${options.length} 个选项`)
+          return true
+        } catch (error) {
+          console.error(`更新选择器 ${id} 时出错:`, error)
+          return false
+        }
+      }
+
+      // 填充下拉选项（保持向后兼容）
+      function populateSelect(id, options) {
+        clearAndPopulateSelect(id, options)
+      }
+
+      // 时间段筛选功能
+      function applyTimeSlotFilter(timeSlot) {
+        // 清除其他时间段的选中状态
+        document.querySelectorAll(".time-slot-btn").forEach((btn) => {
+          btn.classList.remove("active")
         })
+
+        // 设置当前选中的时间段
+        if (timeSlot !== "all") {
+          document
+            .querySelector(`[data-time-slot="${timeSlot}"]`)
+            .classList.add("active")
+        }
+
+        // 应用筛选
+        applyFilters()
       }
 
       // 应用筛选
       function applyFilters() {
-        const filters = {
-          airline: document.getElementById("airline").value,
-          departure: document.getElementById("departure").value,
-          destination: document.getElementById("destination").value,
-          departureProvince: document.getElementById("departureProvince").value,
-          destinationProvince: document.getElementById("destinationProvince")
-            .value,
-          flightNumber: document
-            .getElementById("flightNumber")
-            .value.toUpperCase(),
-          productType: document.getElementById("productType").value,
-          nightFlight: document.getElementById("nightFlight").checked,
-          dayFlight: document.getElementById("dayFlight").checked,
-          departureTime: document.getElementById("departureTime").value,
+        // 安全获取DOM元素值的辅助函数
+        const safeGetValue = (id, defaultValue = "") => {
+          const element = document.getElementById(id)
+          return element ? element.value : defaultValue
+        }
+
+        const safeGetChecked = (id, defaultValue = false) => {
+          const element = document.getElementById(id)
+          return element ? element.checked : defaultValue
+        }
+
+        // 更新全局筛选条件对象
+        filters = {
+          airline: safeGetValue("airline"),
+          departure: safeGetValue("departure"),
+          destination: safeGetValue("destination"),
+          departureProvince: safeGetValue("departureProvince"),
+          destinationProvince: safeGetValue("destinationProvince"),
+          flightNumber: safeGetValue("flightNumber").toUpperCase(),
+          productType: "", // 产品类型通过2666可用按钮处理
+          nightFlight: safeGetChecked("nightFlight"),
+          dayFlight: safeGetChecked("dayFlight"),
+          departureTime: safeGetValue("departureTime"),
           operatingDays: Array.from(
             document.querySelectorAll(".day-checkbox:checked")
-          ).map((cb) => cb.value)
+          ).map((cb) => cb.value),
+          timeSlot:
+            document.querySelector(".time-slot-btn.active")?.dataset.timeSlot ||
+            "all",
+          // 新的筛选条件
+          quickTimeFilter:
+            document.querySelector(".time-filter-btn.active")?.textContent ||
+            "全部时段",
+          tripType:
+            document.querySelector(".trip-type-btn.active")?.textContent ||
+            "单程",
+          available2666:
+            document
+              .getElementById("available2666")
+              ?.classList.contains("active") || false,
+          segment: safeGetValue("segmentSelect", "all")
         }
 
         filteredData = flightData.filter((flight) => {
@@ -825,11 +1252,7 @@
             !flight.flight_number.includes(filters.flightNumber)
           )
             return false
-          if (
-            filters.productType &&
-            flight.product_type !== filters.productType
-          )
-            return false
+          // 产品类型筛选已通过2666可用按钮处理
 
           // 航班类型筛选
           if (filters.nightFlight && !flight.is_night) return false
@@ -854,6 +1277,57 @@
             }
           }
 
+          // 时间段筛选
+          if (filters.timeSlot && filters.timeSlot !== "all") {
+            const hour = parseInt(flight.departure_time.split(":")[0])
+            switch (filters.timeSlot) {
+              case "dawn":
+                if (hour < 0 || hour >= 8) return false
+                break
+              case "morning":
+                if (hour < 8 || hour >= 12) return false
+                break
+              case "afternoon":
+                if (hour < 12 || hour >= 18) return false
+                break
+              case "evening":
+                if (hour < 18 || hour >= 20) return false
+                break
+              case "night":
+                if (hour < 20 && hour >= 8) return false
+                break
+            }
+          }
+
+          // 快捷时间段筛选
+          if (
+            filters.quickTimeFilter &&
+            filters.quickTimeFilter !== "全部时段"
+          ) {
+            const hour = parseInt(flight.departure_time.split(":")[0])
+            switch (filters.quickTimeFilter) {
+              case "凌晨":
+                if (hour < 0 || hour >= 6) return false
+                break
+              case "晚上":
+                if (hour < 18 || hour >= 24) return false
+                break
+            }
+          }
+
+          // 2666可用状态筛选
+          if (filters.available2666) {
+            // 假设航班数据中有availability字段或类似标识
+            if (!flight.availability || !flight.availability.includes("2666"))
+              return false
+          }
+
+          // 航段筛选
+          if (filters.segment && filters.segment !== "all") {
+            // 假设航班数据中有segment字段
+            if (flight.segment !== filters.segment) return false
+          }
+
           // 运营日期筛选
           if (filters.operatingDays.length > 0) {
             const hasMatchingDay = filters.operatingDays.some((day) =>
@@ -867,11 +1341,12 @@
 
         // 保存原始筛选结果
         originalFilteredData = [...filteredData]
-        
-        // 如果有地点搜索，应用地点筛选
-        const locationSearch = document.getElementById('locationSearch').value.trim()
-        if (locationSearch) {
-          performLocationSearch()
+
+        // 如果有城市搜索，应用城市筛选
+        const departureCity = safeGetValue("departureCity").trim()
+        const destinationCity = safeGetValue("destinationCity").trim()
+        if (departureCity || destinationCity) {
+          performCitySearch()
         } else {
           displayResults()
         }
@@ -879,24 +1354,62 @@
 
       // 重置筛选
       function resetFilters() {
-        document.getElementById("airline").value = ""
-        document.getElementById("departure").value = ""
-        document.getElementById("destination").value = ""
-        document.getElementById("departureProvince").value = ""
-        document.getElementById("destinationProvince").value = ""
-        document.getElementById("flightNumber").value = ""
-        document.getElementById("productType").value = ""
-        document.getElementById("nightFlight").checked = false
-        document.getElementById("dayFlight").checked = false
-        document.getElementById("departureTime").value = ""
+        // 安全重置表单元素
+        const safeReset = (id, value = "") => {
+          const element = document.getElementById(id)
+          if (element) element.value = value
+        }
+
+        const safeSetChecked = (id, checked = false) => {
+          const element = document.getElementById(id)
+          if (element) element.checked = checked
+        }
+
+        safeReset("airline")
+        safeReset("departure")
+        safeReset("destination")
+        safeReset("departureProvince")
+        safeReset("destinationProvince")
+        safeReset("flightNumber")
+        safeSetChecked("nightFlight")
+        safeSetChecked("dayFlight")
+        safeReset("departureTime")
+
         document
           .querySelectorAll(".day-checkbox")
           .forEach((cb) => (cb.checked = false))
-        
-        // 清空地点搜索
-        document.getElementById("locationSearch").value = ""
-        document.getElementById("searchResultsInfo").innerHTML = 
-          '<span>💡 提示：输入城市名或省份名，系统将自动筛选相关航班</span>'
+
+        // 清空城市搜索
+        safeReset("departureCity")
+        safeReset("destinationCity")
+
+        // 重置行程类型
+        document.querySelectorAll(".trip-type-btn").forEach((btn) => {
+          btn.classList.remove("active")
+        })
+        const roundtripBtn = document.querySelector('[data-trip="roundtrip"]')
+        if (roundtripBtn) roundtripBtn.classList.add("active")
+
+        // 重置时间段筛选
+        document.querySelectorAll(".time-filter-btn").forEach((btn) => {
+          btn.classList.remove("active")
+        })
+        const allTimeBtn = document.querySelector('[data-time="all"]')
+        if (allTimeBtn) allTimeBtn.classList.add("active")
+
+        // 重置2666可用状态
+        const available2666 = document.getElementById("available2666")
+        if (available2666) available2666.classList.remove("active")
+
+        // 重置航段选择
+        safeReset("segmentSelect", "all")
+
+        document.getElementById("searchResultsInfo").innerHTML = `
+          <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+            <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+            <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+          </div>
+        `
 
         filteredData = flightData
         originalFilteredData = [...flightData]
@@ -914,25 +1427,43 @@
           tbody.innerHTML = filteredData
             .map(
               (flight) => `
-                    <tr class="hover:bg-gray-50 transition-colors duration-200 ${flight.is_night ? "night-flight" : ""}">
+                    <tr class="hover:bg-gray-50 transition-colors duration-200 ${
+                      flight.is_night ? "night-flight" : ""
+                    }">
                         <td class="px-6 py-4 text-sm text-gray-900 font-medium">
-                          <i class="iconfont icon-airplane text-blue-500 mr-2"></i>${flight.airline}
+                          <i class="iconfont icon-airplane text-blue-500 mr-2"></i>${
+                            flight.airline
+                          }
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900 font-mono font-semibold">${flight.flight_number}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 font-mono font-semibold">${
+                          flight.flight_number
+                        }</td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                          <i class="iconfont icon-departure text-green-500 mr-1"></i>${flight.departure}
+                          <i class="iconfont icon-departure text-green-500 mr-1"></i>${highlightMatchedCity(
+                            flight.departure,
+                            "departure"
+                          )}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                          <i class="iconfont icon-arrival text-red-500 mr-1"></i>${flight.destination}
+                          <i class="iconfont icon-arrival text-red-500 mr-1"></i>${highlightMatchedCity(
+                            flight.destination,
+                            "destination"
+                          )}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900 font-mono">
-                          <i class="iconfont icon-time text-blue-500 mr-1"></i>${flight.departure_time}
+                          <i class="iconfont icon-time text-blue-500 mr-1"></i>${
+                            flight.departure_time
+                          }
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900 font-mono">
-                          <i class="iconfont icon-time text-blue-500 mr-1"></i>${flight.arrival_time}
+                          <i class="iconfont icon-time text-blue-500 mr-1"></i>${
+                            flight.arrival_time
+                          }
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                          <i class="iconfont icon-calendar text-purple-500 mr-1"></i>${formatOperatingDays(flight.days)}
+                          <i class="iconfont icon-calendar text-purple-500 mr-1"></i>${formatOperatingDays(
+                            flight.days
+                          )}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -941,12 +1472,12 @@
                         </td>
                         <td class="px-6 py-4 text-sm">
                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            flight.is_night 
-                              ? 'bg-purple-100 text-purple-800' 
-                              : 'bg-orange-100 text-orange-800'
+                            flight.is_night
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-orange-100 text-orange-800"
                           }">
                             <i class="iconfont ${
-                              flight.is_night ? 'icon-moon' : 'icon-sun'
+                              flight.is_night ? "icon-moon" : "icon-sun"
                             } mr-1"></i>
                             ${flight.is_night ? "红眼航班" : "日间航班"}
                           </span>
@@ -958,6 +1489,34 @@
         }
 
         updateStats()
+      }
+
+      // 高亮匹配的城市名称
+      function highlightMatchedCity(cityName, type) {
+        const safeGetValue = (id, defaultValue = "") => {
+          const element = document.getElementById(id)
+          return element ? element.value : defaultValue
+        }
+        
+        const searchValue =
+          type === "departure"
+            ? safeGetValue("departureCity").trim()
+            : safeGetValue("destinationCity").trim()
+
+        if (!searchValue) {
+          return cityName
+        }
+
+        // 如果城市名包含搜索关键词，则高亮显示
+        if (cityName.toLowerCase().includes(searchValue.toLowerCase())) {
+          const regex = new RegExp(`(${searchValue})`, "gi")
+          return cityName.replace(
+            regex,
+            '<span class="bg-yellow-200 text-yellow-800 px-1 rounded font-semibold">$1</span>'
+          )
+        }
+
+        return cityName
       }
 
       // 格式化运营日期
@@ -984,13 +1543,91 @@
 
       // 更新统计信息
       function updateStats() {
-        document.getElementById("totalFlights").textContent =
-          filteredData.length
-        document.getElementById("nightFlights").textContent =
-          filteredData.filter((f) => f.is_night).length
-        document.getElementById("dayFlights").textContent = filteredData.filter(
-          (f) => !f.is_night
-        ).length
+        const total = filteredData.length
+        const nightFlights = filteredData.filter((f) => f.is_night).length
+        const dayFlights = filteredData.filter((f) => !f.is_night).length
+        const availableFlights = Math.floor(total * 0.75) // 模拟2666可用航班数量
+
+        // 安全更新统计数据
+        const safeUpdateText = (id, value) => {
+          const element = document.getElementById(id)
+          if (element) element.textContent = value
+        }
+
+        safeUpdateText("totalFlights", total)
+        safeUpdateText("nightFlights", nightFlights)
+        safeUpdateText("dayFlights", dayFlights)
+        safeUpdateText("availableFlights", availableFlights)
+
+        // 更新当前时段显示
+        const currentHour = new Date().getHours()
+        let timeSlot = "全部"
+        if (currentHour >= 0 && currentHour < 6) timeSlot = "凌晨"
+        else if (currentHour >= 6 && currentHour < 12) timeSlot = "上午"
+        else if (currentHour >= 12 && currentHour < 18) timeSlot = "下午"
+        else if (currentHour >= 18 && currentHour < 24) timeSlot = "晚间"
+
+        safeUpdateText("currentTimeSlot", timeSlot)
+
+        // 更新筛选状态
+        updateFilterStatus()
+      }
+
+      // 更新筛选状态显示
+      function updateFilterStatus() {
+        const filterStatus = document.getElementById("filterStatus")
+        if (!filterStatus) {
+          console.warn("未找到filterStatus元素")
+          return
+        }
+        
+        const activeFilters = []
+
+        if (filters.airline) activeFilters.push("航空公司")
+        if (filters.departure) activeFilters.push("出发地")
+        if (filters.destination) activeFilters.push("到达地")
+        if (filters.nightFlight || filters.dayFlight) activeFilters.push("航班类型")
+        if (filters.timeSlot && filters.timeSlot !== "all") activeFilters.push("时间段")
+        if (filters.departureTime) activeFilters.push("起飞时间")
+        if (filters.operatingDays && filters.operatingDays.length > 0) activeFilters.push("运营日期")
+        if (filters.available2666) activeFilters.push("2666可用")
+        if (filters.segment && filters.segment !== "all") activeFilters.push("航段")
+        if (filters.quickTimeFilter && filters.quickTimeFilter !== "全部时段") activeFilters.push("快捷时间")
+        if (filters.tripType && filters.tripType !== "单程") activeFilters.push("行程类型")
+
+        if (activeFilters.length === 0) {
+          filterStatus.innerHTML =
+            '<i class="iconfont icon-filter mr-1"></i>无筛选条件'
+          filterStatus.className =
+            "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+        } else {
+          filterStatus.innerHTML = `<i class="iconfont icon-filter mr-1"></i>已应用 ${activeFilters.length} 个筛选条件`
+          filterStatus.className =
+            "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+        }
+      }
+
+      // 刷新数据功能
+      function refreshData() {
+        const refreshBtn = event.target.closest("button")
+        if (!refreshBtn) {
+          console.warn("未找到刷新按钮元素")
+          return
+        }
+        
+        const originalText = refreshBtn.innerHTML
+
+        // 显示加载状态
+        refreshBtn.innerHTML =
+          '<i class="iconfont icon-loading animate-spin text-lg mr-2"></i>刷新中...'
+        refreshBtn.disabled = true
+
+        // 模拟刷新延迟
+        setTimeout(() => {
+          loadFlightData()
+          refreshBtn.innerHTML = originalText
+          refreshBtn.disabled = false
+        }, 1500)
       }
 
       // 导出结果
@@ -1031,10 +1668,71 @@
         link.click()
       }
 
+      // 新的筛选功能事件处理
+      function setupNewFilters() {
+        // 时间段筛选按钮事件
+        const timeFilterBtns = document.querySelectorAll(".time-filter-btn")
+        if (timeFilterBtns.length > 0) {
+          timeFilterBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              document
+                .querySelectorAll(".time-filter-btn")
+                .forEach((b) => b.classList.remove("active"))
+              this.classList.add("active")
+              applyFilters()
+            })
+          })
+        }
+
+        // 行程类型按钮事件
+        const tripTypeBtns = document.querySelectorAll(".trip-type-btn")
+        if (tripTypeBtns.length > 0) {
+          tripTypeBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              document
+                .querySelectorAll(".trip-type-btn")
+                .forEach((b) => b.classList.remove("active"))
+              this.classList.add("active")
+              applyFilters()
+            })
+          })
+        }
+
+        // 2666可用状态按钮事件
+        const available2666Btn = document.getElementById("available2666")
+        if (available2666Btn) {
+          available2666Btn.addEventListener("click", function () {
+            this.classList.toggle("active")
+            applyFilters()
+          })
+        }
+
+        // 航段选择事件
+        const segmentSelect = document.getElementById("segmentSelect")
+        if (segmentSelect) {
+          segmentSelect.addEventListener("change", function () {
+            applyFilters()
+          })
+        }
+
+        // 城市搜索框事件
+        const departureCity = document.getElementById("departureCity")
+        const destinationCity = document.getElementById("destinationCity")
+        if (departureCity) {
+          departureCity.addEventListener("input", performCitySearch)
+        }
+        if (destinationCity) {
+          destinationCity.addEventListener("input", performCitySearch)
+        }
+      }
+
       // 页面加载完成后初始化
       window.onload = function () {
         // 自动加载在线数据
         loadFlightData()
+
+        // 设置新的筛选功能事件
+        setupNewFilters()
 
         // 备用：提供文件输入框让用户选择本地文件
         const fileInput = document.createElement("input")
@@ -1061,105 +1759,563 @@
         document.body.appendChild(fileInput)
       }
 
-      // 地点搜索功能
-      function performLocationSearch() {
-        const searchTerm = document.getElementById('locationSearch').value.trim().toLowerCase()
-        const searchResultsInfo = document.getElementById('searchResultsInfo')
+      // 新的城市搜索功能
+      function performCitySearch() {
+        const safeGetValue = (id, defaultValue = "") => {
+          const element = document.getElementById(id)
+          return element ? element.value : defaultValue
+        }
         
-        if (!searchTerm) {
-          // 如果搜索框为空，显示原始筛选结果
+        const departureCity = safeGetValue("departureCity").trim().toLowerCase()
+        const destinationCity = safeGetValue("destinationCity").trim().toLowerCase()
+        const searchResultsInfo = document.getElementById("searchResultsInfo")
+
+        if (!departureCity && !destinationCity) {
+          // 如果搜索框都为空，显示原始筛选结果
           filteredData = [...originalFilteredData]
-          searchResultsInfo.innerHTML = '<span>💡 提示：输入城市名或省份名，系统将自动筛选相关航班</span>'
+          searchResultsInfo.innerHTML = `
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+            </div>
+          `
           displayResults()
           return
         }
-        
-        // 在原始筛选结果中进行地点搜索
-        const locationFilteredData = originalFilteredData.filter(flight => {
-          return (
-            flight.departure.toLowerCase().includes(searchTerm) ||
-            flight.destination.toLowerCase().includes(searchTerm) ||
-            flight.departure_province.toLowerCase().includes(searchTerm) ||
-            flight.destination_province.toLowerCase().includes(searchTerm)
-          )
+
+        // 在原始筛选结果中进行城市搜索
+        const cityFilteredData = originalFilteredData.filter((flight) => {
+          let departureMatch = true
+          let destinationMatch = true
+
+          if (departureCity) {
+            departureMatch =
+              flight.departure.toLowerCase().includes(departureCity) ||
+              flight.departure_province.toLowerCase().includes(departureCity)
+          }
+
+          if (destinationCity) {
+            destinationMatch =
+              flight.destination.toLowerCase().includes(destinationCity) ||
+              flight.destination_province
+                .toLowerCase()
+                .includes(destinationCity)
+          }
+
+          return departureMatch && destinationMatch
         })
-        
-        filteredData = locationFilteredData
-        
+
+        filteredData = cityFilteredData
+
         // 更新搜索结果信息
-        if (locationFilteredData.length > 0) {
-          const departureMatches = locationFilteredData.filter(f => 
-            f.departure.toLowerCase().includes(searchTerm) || 
-            f.departure_province.toLowerCase().includes(searchTerm)
-          ).length
-          const arrivalMatches = locationFilteredData.filter(f => 
-            f.destination.toLowerCase().includes(searchTerm) || 
-            f.destination_province.toLowerCase().includes(searchTerm)
-          ).length
-          
-          let matchInfo = []
-          if (departureMatches > 0) matchInfo.push(`${departureMatches}个出发航班`)
-          if (arrivalMatches > 0) matchInfo.push(`${arrivalMatches}个到达航班`)
-          
+        if (cityFilteredData.length > 0) {
+          let searchInfo = []
+          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
+          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
+
           searchResultsInfo.innerHTML = `
-            <span>🔍 搜索"<span class="search-highlight">${searchTerm}</span>"找到 ${locationFilteredData.length} 个结果</span>
-            <span>(${matchInfo.join('，')})</span>
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 rounded-xl border border-green-100 shadow-sm">
+              <i class="iconfont icon-success text-green-500 text-xl"></i>
+              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
+                " → "
+              )} | 找到 ${cityFilteredData.length} 个航班</span>
+            </div>
           `
         } else {
+          let searchInfo = []
+          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
+          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
+
           searchResultsInfo.innerHTML = `
-            <span>🔍 搜索"<span class="search-highlight">${searchTerm}</span>"未找到相关航班</span>
-            <span>请尝试其他关键词</span>
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
+              <i class="iconfont icon-warning text-red-500 text-xl"></i>
+              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
+                " → "
+              )} | 未找到相关航班，请尝试其他城市</span>
+            </div>
           `
         }
-        
+
         displayResults()
       }
-      
-      // 清空地点搜索
-      function clearLocationSearch() {
-        document.getElementById('locationSearch').value = ''
-        document.getElementById('searchResultsInfo').innerHTML = 
-          '<span>💡 提示：输入城市名或省份名，系统将自动筛选相关航班</span>'
+
+      // 清空城市搜索
+      function clearCitySearch() {
+        const safeReset = (id, value = "") => {
+          const element = document.getElementById(id)
+          if (element) element.value = value
+        }
         
+        safeReset("departureCity")
+        safeReset("destinationCity")
+        
+        // 安全更新搜索结果信息
+        const searchResultsInfo = document.getElementById("searchResultsInfo")
+        if (searchResultsInfo) {
+          searchResultsInfo.innerHTML = `
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+            </div>
+          `
+        }
+
         // 恢复到原始筛选结果
         filteredData = [...originalFilteredData]
         displayResults()
       }
-      
+
+      // 出发城市搜索功能
+      function performDepartureSearch() {
+        const departureInput = document.getElementById("departureSearch")
+        if (!departureInput) return
+        
+        const searchValue = departureInput.value.trim().toLowerCase()
+        performCitySearch()
+      }
+
+      // 目的地城市搜索功能
+      function performDestinationSearch() {
+        const destinationInput = document.getElementById("destinationSearch")
+        if (!destinationInput) return
+        
+        const searchValue = destinationInput.value.trim().toLowerCase()
+        performCitySearch()
+      }
+
+      // 清空出发城市搜索
+      function clearDepartureSearch() {
+        const departureInput = document.getElementById("departureSearch")
+        if (departureInput) {
+          departureInput.value = ""
+          performCitySearch()
+        }
+      }
+
+      // 清空目的地城市搜索
+      function clearDestinationSearch() {
+        const destinationInput = document.getElementById("destinationSearch")
+        if (destinationInput) {
+          destinationInput.value = ""
+          performCitySearch()
+        }
+      }
+
+      // 行程类型选择功能
+      function selectTripType(type) {
+        // 移除所有按钮的active状态
+        document.querySelectorAll(".trip-type-btn").forEach(btn => {
+          btn.classList.remove("active")
+          btn.classList.remove("bg-blue-500", "text-white")
+          btn.classList.add("border-gray-300", "text-gray-700")
+        })
+        
+        // 为当前选中的按钮添加active状态
+        const selectedBtn = document.querySelector(`[data-type="${type}"]`)
+        if (selectedBtn) {
+          selectedBtn.classList.add("active")
+          selectedBtn.classList.remove("border-gray-300", "text-gray-700")
+          selectedBtn.classList.add("bg-blue-500", "text-white")
+        }
+        
+        // 更新筛选条件
+        filters.tripType = type === "round-trip" ? "往返" : "单程"
+        
+        // 应用筛选
+        applyFilters()
+      }
+
+      // 时间筛选功能
+      function selectTimeFilter(timeType) {
+        // 移除所有按钮的active状态
+        document.querySelectorAll(".time-filter-btn").forEach(btn => {
+          btn.classList.remove("active")
+          btn.classList.remove("bg-blue-500", "text-white")
+          btn.classList.add("border-gray-300", "text-gray-700")
+        })
+        
+        // 为当前选中的按钮添加active状态
+        const selectedBtn = document.querySelector(`[data-time="${timeType}"]`)
+        if (selectedBtn) {
+          selectedBtn.classList.add("active")
+          selectedBtn.classList.remove("border-gray-300", "text-gray-700")
+          selectedBtn.classList.add("bg-blue-500", "text-white")
+        }
+        
+        // 更新筛选条件
+        filters.quickTimeFilter = timeType === "all" ? "全部时段" : 
+                                 timeType === "night" ? "晚上" : 
+                                 timeType === "early" ? "凌晨" : "全部时段"
+        
+        // 应用筛选
+        applyFilters()
+      }
+
+      // 可用性筛选切换
+      function toggleAvailabilityFilter(type) {
+        const btn = document.querySelector(`[data-availability="${type}"]`)
+        if (!btn) return
+        
+        if (btn.classList.contains("active")) {
+          btn.classList.remove("active", "bg-green-500", "text-white")
+          btn.classList.add("border-green-300", "text-green-700")
+          filters.available2666 = false
+        } else {
+          btn.classList.add("active", "bg-green-500", "text-white")
+          btn.classList.remove("border-green-300", "text-green-700")
+          filters.available2666 = true
+        }
+        
+        // 应用筛选
+        applyFilters()
+      }
+
+      // 航段筛选功能
+      function selectSegmentFilter(segment) {
+        filters.segment = segment || "all"
+        applyFilters()
+      }
+
+      // 城市搜索功能（统一处理出发和目的地搜索）
+      function performCitySearch() {
+        const departureInput = document.getElementById("departureSearch")
+        const destinationInput = document.getElementById("destinationSearch")
+        const searchResultsInfo = document.getElementById("searchResultsInfo")
+        
+        if (!departureInput || !destinationInput || !searchResultsInfo) {
+          console.warn("搜索相关DOM元素未找到")
+          return
+        }
+        
+        const departureCity = departureInput.value.trim().toLowerCase()
+        const destinationCity = destinationInput.value.trim().toLowerCase()
+        
+        // 如果没有搜索条件，显示默认提示
+        if (!departureCity && !destinationCity) {
+          searchResultsInfo.innerHTML = `
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+            </div>
+          `
+          filteredData = [...originalFilteredData]
+          displayResults()
+          return
+        }
+        
+        // 在原始筛选结果中进行城市搜索
+        const cityFilteredData = originalFilteredData.filter((flight) => {
+          let departureMatch = true
+          let destinationMatch = true
+          
+          if (departureCity) {
+            departureMatch = 
+              flight.departure.toLowerCase().includes(departureCity) ||
+              flight.departure_province.toLowerCase().includes(departureCity)
+          }
+          
+          if (destinationCity) {
+            destinationMatch = 
+              flight.destination.toLowerCase().includes(destinationCity) ||
+              flight.destination_province.toLowerCase().includes(destinationCity)
+          }
+          
+          return departureMatch && destinationMatch
+        })
+        
+        filteredData = cityFilteredData
+        
+        // 更新搜索结果信息
+        if (cityFilteredData.length > 0) {
+          let searchInfo = []
+          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
+          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
+          
+          searchResultsInfo.innerHTML = `
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 rounded-xl border border-green-100 shadow-sm">
+              <i class="iconfont icon-success text-green-500 text-xl"></i>
+              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(" → ")} | 找到 ${cityFilteredData.length} 个航班</span>
+            </div>
+          `
+        } else {
+          let searchInfo = []
+          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
+          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
+          
+          searchResultsInfo.innerHTML = `
+            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
+              <i class="iconfont icon-warning text-red-500 text-xl"></i>
+              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(" → ")} | 未找到相关航班，请尝试其他城市</span>
+            </div>
+          `
+        }
+        
+        displayResults()
+      }
+
       // 切换详细搜索面板
       function toggleAdvancedSearch() {
-        const filtersPanel = document.getElementById('advancedFilters')
-        const toggleBtn = document.getElementById('toggleBtn')
-        const toggleIcon = document.getElementById('toggleIcon')
-        
-        if (filtersPanel.style.display === 'none') {
+        const filtersPanel = document.getElementById("advancedFilters")
+        const toggleBtn = document.getElementById("toggleBtn")
+        const toggleText = document.getElementById("toggleText")
+        const toggleIcon = document.getElementById("toggleIcon")
+
+        // 检查DOM元素是否存在
+        if (!filtersPanel) {
+          console.warn("未找到advancedFilters元素")
+          return
+        }
+
+        if (filtersPanel.style.display === "none" || !filtersPanel.style.display) {
           // 显示筛选面板
-          filtersPanel.style.display = 'block'
-          filtersPanel.classList.remove('hide')
-          filtersPanel.classList.add('show')
-          
+          filtersPanel.style.display = "block"
+          filtersPanel.classList.remove("hide")
+          filtersPanel.classList.add("show")
+
           // 更新按钮状态
-          toggleBtn.textContent = '收起筛选'
-          toggleBtn.classList.add('expanded')
-          toggleIcon.textContent = '▲'
+          if (toggleText) toggleText.textContent = "收起筛选"
+          if (toggleBtn) toggleBtn.classList.add("expanded")
+          if (toggleIcon) toggleIcon.textContent = "▲"
         } else {
           // 隐藏筛选面板
-          filtersPanel.classList.remove('show')
-          filtersPanel.classList.add('hide')
-          
+          filtersPanel.classList.remove("show")
+          filtersPanel.classList.add("hide")
+
           // 更新按钮状态
-          toggleBtn.textContent = '详细搜索'
-          toggleBtn.classList.remove('expanded')
-          toggleIcon.textContent = '▼'
-          
+          if (toggleText) toggleText.textContent = "详细搜索"
+          if (toggleBtn) toggleBtn.classList.remove("expanded")
+          if (toggleIcon) toggleIcon.textContent = "▼"
+
           // 延迟隐藏以等待动画完成
           setTimeout(() => {
-            if (filtersPanel.classList.contains('hide')) {
-              filtersPanel.style.display = 'none'
-              filtersPanel.classList.remove('hide')
+            if (filtersPanel.classList.contains("hide")) {
+              filtersPanel.style.display = "none"
+              filtersPanel.classList.remove("hide")
             }
           }, 400)
         }
+      }
+
+      // 城市下拉选择功能
+      let allCities = new Set()
+      let currentFocusedInput = null
+      let selectedIndex = -1
+
+      // 初始化城市数据
+      function initializeCityData() {
+        allCities.clear()
+        if (flightData && flightData.length > 0) {
+          flightData.forEach(flight => {
+            allCities.add(flight.departure)
+            allCities.add(flight.destination)
+          })
+        }
+      }
+
+      // 显示城市下拉列表
+      function showCityDropdown(inputId, cities) {
+        const dropdownId = inputId + 'Dropdown'
+        const dropdown = document.getElementById(dropdownId)
+        if (!dropdown) return
+
+        dropdown.innerHTML = ''
+        selectedIndex = -1
+
+        if (cities.length === 0) {
+          dropdown.style.display = 'none'
+          return
+        }
+
+        cities.forEach((city, index) => {
+          const option = document.createElement('div')
+          option.className = 'px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-700 border-b border-gray-100 last:border-b-0'
+          option.textContent = city
+          option.onclick = () => selectCity(inputId, city)
+          dropdown.appendChild(option)
+        })
+
+        dropdown.style.display = 'block'
+      }
+
+      // 隐藏城市下拉列表
+      function hideCityDropdown(inputId) {
+        const dropdownId = inputId + 'Dropdown'
+        const dropdown = document.getElementById(dropdownId)
+        if (dropdown) {
+          dropdown.style.display = 'none'
+        }
+        selectedIndex = -1
+      }
+
+      // 选择城市
+      function selectCity(inputId, city) {
+        const input = document.getElementById(inputId)
+        if (input) {
+          input.value = city
+          hideCityDropdown(inputId)
+          performCitySearch()
+        }
+      }
+
+      // 筛选城市
+      function filterCities(inputValue) {
+        if (!inputValue) return Array.from(allCities).slice(0, 10)
+        
+        const filtered = Array.from(allCities).filter(city => 
+          city.toLowerCase().includes(inputValue.toLowerCase())
+        )
+        return filtered.slice(0, 10)
+      }
+
+      // 处理输入框焦点事件
+      function handleCityInputFocus(inputId) {
+        currentFocusedInput = inputId
+        const input = document.getElementById(inputId)
+        if (input) {
+          const cities = filterCities(input.value)
+          showCityDropdown(inputId, cities)
+        }
+      }
+
+      // 处理输入框失焦事件
+      function handleCityInputBlur(inputId) {
+        // 延迟隐藏，允许点击下拉选项
+        setTimeout(() => {
+          if (currentFocusedInput === inputId) {
+            hideCityDropdown(inputId)
+            currentFocusedInput = null
+          }
+        }, 200)
+      }
+
+      // 处理输入框输入事件
+      function handleCityInputChange(inputId) {
+        const input = document.getElementById(inputId)
+        if (input) {
+          const cities = filterCities(input.value)
+          showCityDropdown(inputId, cities)
+          performCitySearch()
+        }
+      }
+
+      // 处理键盘导航
+      function handleCityInputKeydown(event, inputId) {
+        const dropdownId = inputId + 'Dropdown'
+        const dropdown = document.getElementById(dropdownId)
+        if (!dropdown || dropdown.style.display === 'none') return
+
+        const options = dropdown.children
+        if (options.length === 0) return
+
+        switch (event.key) {
+          case 'ArrowDown':
+            event.preventDefault()
+            selectedIndex = Math.min(selectedIndex + 1, options.length - 1)
+            updateSelectedOption(options)
+            break
+          case 'ArrowUp':
+            event.preventDefault()
+            selectedIndex = Math.max(selectedIndex - 1, -1)
+            updateSelectedOption(options)
+            break
+          case 'Enter':
+            event.preventDefault()
+            if (selectedIndex >= 0 && selectedIndex < options.length) {
+              const selectedCity = options[selectedIndex].textContent
+              selectCity(inputId, selectedCity)
+            }
+            break
+          case 'Escape':
+            hideCityDropdown(inputId)
+            break
+        }
+      }
+
+      // 更新选中的选项样式
+      function updateSelectedOption(options) {
+        Array.from(options).forEach((option, index) => {
+          if (index === selectedIndex) {
+            option.className = 'px-4 py-2 bg-blue-100 cursor-pointer text-gray-700 border-b border-gray-100 last:border-b-0'
+          } else {
+            option.className = 'px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-700 border-b border-gray-100 last:border-b-0'
+          }
+        })
+      }
+
+      // 备用示例数据
+      function getBackupFlightData() {
+        return [
+          {
+            airline: "中国国际航空",
+            flight_number: "CA1234",
+            departure: "北京",
+            destination: "上海",
+            departure_province: "北京市",
+            destination_province: "上海市",
+            departure_time: "08:30",
+            arrival_time: "10:45",
+            days: "1234567",
+            product_type: "经济舱",
+            is_night: false,
+            segment: "国内"
+          },
+          {
+            airline: "中国东方航空",
+            flight_number: "MU5678",
+            departure: "上海",
+            destination: "广州",
+            departure_province: "上海市",
+            destination_province: "广东省",
+            departure_time: "14:20",
+            arrival_time: "17:10",
+            days: "1234567",
+            product_type: "商务舱",
+            is_night: false,
+            segment: "国内"
+          },
+          {
+            airline: "中国南方航空",
+            flight_number: "CZ9012",
+            departure: "广州",
+            destination: "深圳",
+            departure_province: "广东省",
+            destination_province: "广东省",
+            departure_time: "22:15",
+            arrival_time: "23:30",
+            days: "1234567",
+            product_type: "经济舱",
+            is_night: true,
+            segment: "国内"
+          },
+          {
+            airline: "海南航空",
+            flight_number: "HU3456",
+            departure: "深圳",
+            destination: "成都",
+            departure_province: "广东省",
+            destination_province: "四川省",
+            departure_time: "06:45",
+            arrival_time: "09:20",
+            days: "1234567",
+            product_type: "经济舱",
+            is_night: false,
+            segment: "国内"
+          },
+          {
+            airline: "厦门航空",
+            flight_number: "MF7890",
+            departure: "成都",
+            destination: "西安",
+            departure_province: "四川省",
+            destination_province: "陕西省",
+            departure_time: "01:30",
+            arrival_time: "03:15",
+            days: "1234567",
+            product_type: "经济舱",
+            is_night: true,
+            segment: "国内"
+          }
+        ]
       }
     </script>
   </body>

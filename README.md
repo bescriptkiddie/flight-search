@@ -1,6 +1,6 @@
 # 航班筛选系统 Flight Filter System
 
-一个基于 HTML/JavaScript 的航班数据筛选和可视化系统，支持多种筛选条件和实时数据展示。
+一个基于HTML/JavaScript的航班数据筛选和可视化系统，支持多种筛选条件和实时数据展示。
 
 ## 功能特性
 
@@ -13,7 +13,7 @@
 ## 项目结构
 
 ```
-flight-search/
+airplane-search/
 ├── index.html          # 主页面文件
 ├── flights_data.json   # 航班数据文件
 ├── _redirects          # Netlify重定向配置
@@ -38,8 +38,7 @@ flight-search/
 ### 1. GitHub Pages 部署
 
 **步骤：**
-
-1. 将项目推送到 GitHub 仓库
+1. 将项目推送到GitHub仓库
 2. 进入仓库设置页面
 3. 找到"Pages"选项
 4. 选择"Deploy from a branch"
@@ -48,50 +47,44 @@ flight-search/
 7. 等待几分钟后，访问 `https://yourusername.github.io/repository-name`
 
 **优点：**
-
 - 完全免费
-- 与 GitHub 集成良好
+- 与GitHub集成良好
 - 自动部署
 
 ### 2. Netlify 部署
 
 **方法一：拖拽部署**
-
 1. 访问 [Netlify](https://netlify.com)
 2. 注册/登录账户
-3. 将项目文件夹直接拖拽到 Netlify 部署区域
+3. 将项目文件夹直接拖拽到Netlify部署区域
 4. 等待部署完成，获得访问链接
 
-**方法二：Git 集成**
-
-1. 将项目推送到 GitHub/GitLab
-2. 在 Netlify 中选择"New site from Git"
-3. 连接你的 Git 仓库
-4. 选择分支（通常是 main）
+**方法二：Git集成**
+1. 将项目推送到GitHub/GitLab
+2. 在Netlify中选择"New site from Git"
+3. 连接你的Git仓库
+4. 选择分支（通常是main）
 5. 构建设置保持默认（静态站点无需构建）
 6. 点击"Deploy site"
 
 **优点：**
-
 - 免费额度充足
 - 支持自定义域名
-- 自动 HTTPS
+- 自动HTTPS
 - 表单处理功能
 
 ### 3. Vercel 部署
 
 **步骤：**
-
 1. 访问 [Vercel](https://vercel.com)
-2. 使用 GitHub 账户登录
+2. 使用GitHub账户登录
 3. 点击"New Project"
-4. 选择你的 GitHub 仓库
+4. 选择你的GitHub仓库
 5. 保持默认设置，点击"Deploy"
 6. 等待部署完成
 
 **优点：**
-
-- 极快的全球 CDN
+- 极快的全球CDN
 - 自动优化
 - 零配置部署
 - 优秀的开发者体验
@@ -99,14 +92,12 @@ flight-search/
 ### 4. 其他部署选项
 
 **Surge.sh（命令行部署）：**
-
 ```bash
 npm install -g surge
 surge
 ```
 
 **Firebase Hosting：**
-
 ```bash
 npm install -g firebase-tools
 firebase login
@@ -130,7 +121,7 @@ firebase deploy
 - CSS3 (响应式设计)
 - Vanilla JavaScript
 - Fetch API
-- JSON 数据处理
+- JSON数据处理
 
 ## 浏览器支持
 
@@ -145,11 +136,10 @@ MIT License
 
 ## 贡献
 
-欢迎提交 Issue 和 Pull Request 来改进这个项目！
+欢迎提交Issue和Pull Request来改进这个项目！
 
 ---
 
 **快速部署链接：**
-
-- [部署到 Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/flight-search)
-- [部署到 Vercel](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/flight-search)
+- [部署到Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/airplane-search)
+- [部署到Vercel](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/airplane-search)
