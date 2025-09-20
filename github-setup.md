@@ -44,6 +44,7 @@ git push -u origin main
 ## 故障排除
 
 如果遇到问题：
+
 1. 检查仓库是否为 Public
 2. 确认 GitHub Pages 设置正确
 3. 等待几分钟让部署完成
