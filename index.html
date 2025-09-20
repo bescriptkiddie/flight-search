@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>航班信息筛选系统</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Microsoft YaHei", sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+      }
+
+      .filter-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .filter-group input,
+      .filter-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .filter-group input:focus,
+      .filter-group select:focus {
+        outline: none;
+        border-color: #4caf50;
+      }
+
+      .checkbox-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        font-weight: normal;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #45a049;
+      }
+
+      .btn-secondary {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #da190b;
+      }
+
+      .results-info {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .flight-table {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background-color: #f9f9f9;
+      }
+
+      .night-flight {
+        background-color: #e3f2fd;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .stats {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .stat-label {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .stat-value {
+        font-weight: bold;
+        color: #4caf50;
+      }
+
+      @media (max-width: 768px) {
+        .filter-row {
+          flex-direction: column;
+        }
+
+        .filter-group {
+          min-width: 100%;
+        }
+
+        .results-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .stats {
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>航班信息筛选系统</h1>
+
+      <div class="filter-panel">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="airline">航空公司</label>
+            <select id="airline">
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="departure">出发城市</label>
+            <select id="departure">
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="destination">到达城市</label>
+            <select id="destination">
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="departureProvince">出发省份</label>
+            <select id="departureProvince">
+              <option value="">全部</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="destinationProvince">到达省份</label>
+            <select id="destinationProvince">
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="flightNumber">航班号</label>
+            <input type="text" id="flightNumber" placeholder="输入航班号" />
+          </div>
+
+          <div class="filter-group">
+            <label for="productType">产品类型</label>
+            <select id="productType">
+              <option value="">全部</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>航班类型</label>
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox" id="nightFlight" value="true" />
+                红眼航班
+              </label>
+              <label>
+                <input type="checkbox" id="dayFlight" value="true" />
+                日间航班
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="departureTime">起飞时间</label>
+            <select id="departureTime">
+              <option value="">全部</option>
+              <option value="early">凌晨 (00:00-06:00)</option>
+              <option value="morning">上午 (06:00-12:00)</option>
+              <option value="afternoon">下午 (12:00-18:00)</option>
+              <option value="evening">晚上 (18:00-24:00)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="operatingDays">运营日期</label>
+            <div class="checkbox-group">
+              <label
+                ><input type="checkbox" class="day-checkbox" value="1" />
+                周一</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="2" />
+                周二</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="3" />
+                周三</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="4" />
+                周四</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="5" />
+                周五</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="6" />
+                周六</label
+              >
+              <label
+                ><input type="checkbox" class="day-checkbox" value="7" />
+                周日</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="applyFilters()">应用筛选</button>
+          <button class="btn-secondary" onclick="resetFilters()">
+            重置筛选
+          </button>
+        </div>
+      </div>
+
+      <div class="results-info">
+        <div>
+          <h3>查询结果</h3>
+          <div class="stats">
+            <div class="stat-item">
+              <span class="stat-label">总航班数：</span>
+              <span class="stat-value" id="totalFlights">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">红眼航班：</span>
+              <span class="stat-value" id="nightFlights">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">日间航班：</span>
+              <span class="stat-value" id="dayFlights">0</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button class="btn-primary" onclick="exportResults()">
+            导出结果
+          </button>
+        </div>
+      </div>
+
+      <div class="flight-table">
+        <table id="flightTable">
+          <thead>
+            <tr>
+              <th>航空公司</th>
+              <th>航班号</th>
+              <th>出发城市</th>
+              <th>到达城市</th>
+              <th>出发时间</th>
+              <th>到达时间</th>
+              <th>运营日期</th>
+              <th>产品类型</th>
+              <th>航班类型</th>
+            </tr>
+          </thead>
+          <tbody id="flightTableBody">
+            <tr>
+              <td colspan="9" class="loading">正在加载数据...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      let flightData = []
+      let filteredData = []
+
+      // 加载航班数据
+      async function loadFlightData() {
+        console.log("开始加载航班数据...")
+        document.getElementById("flightTableBody").innerHTML =
+          '<tr><td colspan="9" class="no-results">正在加载数据，请稍候...</td></tr>'
+
+        // 优先尝试本地数据
+        try {
+          console.log("尝试加载本地数据: ./flights_data.json")
+          const localResponse = await fetch("./flights_data.json")
+          if (localResponse.ok) {
+            const localData = await localResponse.json()
+            console.log("成功加载本地数据:", localData)
+            console.log(
+              "航班数量:",
+              localData.flights ? localData.flights.length : 0
+            )
+
+            if (localData.flights && Array.isArray(localData.flights)) {
+              flightData = localData.flights
+              console.log("本地数据加载完成，开始初始化筛选器")
+              initializeFilters()
+              applyFilters()
+              console.log("页面初始化完成")
+              return
+            }
+          }
+        } catch (localError) {
+          console.log("本地数据不可用，尝试在线数据:", localError.message)
+        }
+
+        // 如果本地数据不可用，尝试在线数据
+        try {
+          console.log(
+            "发送网络请求到: https://flight-route.surge.sh/flights_data.json"
+          )
+
+          // 尝试使用CORS代理
+          const corsProxyUrls = [
+            "https://cors-anywhere.herokuapp.com/https://flight-route.surge.sh/flights_data.json",
+            "https://api.allorigins.win/get?url=https://flight-route.surge.sh/flights_data.json",
+            "https://flight-route.surge.sh/flights_data.json"
+          ]
+
+          let response = null
+          let data = null
+
+          for (const url of corsProxyUrls) {
+            try {
+              console.log("尝试URL:", url)
+              response = await fetch(url, {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                  Accept: "application/json"
+                }
+              })
+
+              if (response.ok) {
+                console.log("响应状态:", response.status, response.statusText)
+                const responseData = await response.json()
+
+                // 处理不同代理的响应格式
+                if (url.includes("allorigins.win")) {
+                  data = JSON.parse(responseData.contents)
+                } else {
+                  data = responseData
+                }
+
+                console.log("成功获取在线数据:", data)
+                break
+              }
+            } catch (proxyError) {
+              console.log(`代理 ${url} 失败:`, proxyError.message)
+              continue
+            }
+          }
+
+          if (!data || !data.flights || !Array.isArray(data.flights)) {
+            throw new Error("无法获取有效的航班数据")
+          }
+
+          console.log("航班数量:", data.flights.length)
+          flightData = data.flights
+          console.log("在线数据加载完成，开始初始化筛选器")
+          initializeFilters()
+          applyFilters()
+          console.log("页面初始化完成")
+        } catch (error) {
+          console.error("所有数据源加载失败:", error)
+          console.error("错误详情:", error.message)
+
+          document.getElementById(
+            "flightTableBody"
+          ).innerHTML = `<tr><td colspan="9" class="no-results">数据加载失败: ${error.message}<br><br>可能的原因：<br>1. 本地文件 flights_data.json 不存在<br>2. 网络连接问题<br>3. 跨域请求被阻止<br>4. 服务器暂时不可用<br><br><button class="btn-primary" onclick="loadFlightData()">重试</button><br><br><button class="btn-primary" onclick="document.querySelector('input[type=file]').click()">选择本地文件</button></td></tr>`
+        }
+      }
+
+      // 初始化筛选器选项
+      function initializeFilters() {
+        const airlines = [...new Set(flightData.map((f) => f.airline))].sort()
+        const departures = [
+          ...new Set(flightData.map((f) => f.departure))
+        ].sort()
+        const destinations = [
+          ...new Set(flightData.map((f) => f.destination))
+        ].sort()
+        const departureProvinces = [
+          ...new Set(flightData.map((f) => f.departure_province))
+        ].sort()
+        const destinationProvinces = [
+          ...new Set(flightData.map((f) => f.destination_province))
+        ].sort()
+        const productTypes = [
+          ...new Set(flightData.map((f) => f.product_type))
+        ].sort()
+
+        populateSelect("airline", airlines)
+        populateSelect("departure", departures)
+        populateSelect("destination", destinations)
+        populateSelect("departureProvince", departureProvinces)
+        populateSelect("destinationProvince", destinationProvinces)
+        populateSelect("productType", productTypes)
+      }
+
+      // 填充下拉选项
+      function populateSelect(id, options) {
+        const select = document.getElementById(id)
+        options.forEach((option) => {
+          const optionElement = document.createElement("option")
+          optionElement.value = option
+          optionElement.textContent = option
+          select.appendChild(optionElement)
+        })
+      }
+
+      // 应用筛选
+      function applyFilters() {
+        const filters = {
+          airline: document.getElementById("airline").value,
+          departure: document.getElementById("departure").value,
+          destination: document.getElementById("destination").value,
+          departureProvince: document.getElementById("departureProvince").value,
+          destinationProvince: document.getElementById("destinationProvince")
+            .value,
+          flightNumber: document
+            .getElementById("flightNumber")
+            .value.toUpperCase(),
+          productType: document.getElementById("productType").value,
+          nightFlight: document.getElementById("nightFlight").checked,
+          dayFlight: document.getElementById("dayFlight").checked,
+          departureTime: document.getElementById("departureTime").value,
+          operatingDays: Array.from(
+            document.querySelectorAll(".day-checkbox:checked")
+          ).map((cb) => cb.value)
+        }
+
+        filteredData = flightData.filter((flight) => {
+          // 基础筛选
+          if (filters.airline && flight.airline !== filters.airline)
+            return false
+          if (filters.departure && flight.departure !== filters.departure)
+            return false
+          if (filters.destination && flight.destination !== filters.destination)
+            return false
+          if (
+            filters.departureProvince &&
+            flight.departure_province !== filters.departureProvince
+          )
+            return false
+          if (
+            filters.destinationProvince &&
+            flight.destination_province !== filters.destinationProvince
+          )
+            return false
+          if (
+            filters.flightNumber &&
+            !flight.flight_number.includes(filters.flightNumber)
+          )
+            return false
+          if (
+            filters.productType &&
+            flight.product_type !== filters.productType
+          )
+            return false
+
+          // 航班类型筛选
+          if (filters.nightFlight && !flight.is_night) return false
+          if (filters.dayFlight && flight.is_night) return false
+
+          // 起飞时间筛选
+          if (filters.departureTime) {
+            const hour = parseInt(flight.departure_time.split(":")[0])
+            switch (filters.departureTime) {
+              case "early":
+                if (hour >= 6) return false
+                break
+              case "morning":
+                if (hour < 6 || hour >= 12) return false
+                break
+              case "afternoon":
+                if (hour < 12 || hour >= 18) return false
+                break
+              case "evening":
+                if (hour < 18) return false
+                break
+            }
+          }
+
+          // 运营日期筛选
+          if (filters.operatingDays.length > 0) {
+            const hasMatchingDay = filters.operatingDays.some((day) =>
+              flight.days.includes(day)
+            )
+            if (!hasMatchingDay) return false
+          }
+
+          return true
+        })
+
+        displayResults()
+      }
+
+      // 重置筛选
+      function resetFilters() {
+        document.getElementById("airline").value = ""
+        document.getElementById("departure").value = ""
+        document.getElementById("destination").value = ""
+        document.getElementById("departureProvince").value = ""
+        document.getElementById("destinationProvince").value = ""
+        document.getElementById("flightNumber").value = ""
+        document.getElementById("productType").value = ""
+        document.getElementById("nightFlight").checked = false
+        document.getElementById("dayFlight").checked = false
+        document.getElementById("departureTime").value = ""
+        document
+          .querySelectorAll(".day-checkbox")
+          .forEach((cb) => (cb.checked = false))
+
+        filteredData = flightData
+        displayResults()
+      }
+
+      // 显示结果
+      function displayResults() {
+        const tbody = document.getElementById("flightTableBody")
+
+        if (filteredData.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="9" class="no-results">没有找到符合条件的航班</td></tr>'
+        } else {
+          tbody.innerHTML = filteredData
+            .map(
+              (flight) => `
+                    <tr class="${flight.is_night ? "night-flight" : ""}">
+                        <td>${flight.airline}</td>
+                        <td>${flight.flight_number}</td>
+                        <td>${flight.departure}</td>
+                        <td>${flight.destination}</td>
+                        <td>${flight.departure_time}</td>
+                        <td>${flight.arrival_time}</td>
+                        <td>${formatOperatingDays(flight.days)}</td>
+                        <td>${flight.product_type}</td>
+                        <td>${flight.is_night ? "红眼航班" : "日间航班"}</td>
+                    </tr>
+                `
+            )
+            .join("")
+        }
+
+        updateStats()
+      }
+
+      // 格式化运营日期
+      function formatOperatingDays(days) {
+        const dayMap = {
+          1: "周一",
+          2: "周二",
+          3: "周三",
+          4: "周四",
+          5: "周五",
+          6: "周六",
+          7: "周日"
+        }
+
+        if (days === "1234567") {
+          return "每日"
+        }
+
+        return days
+          .split("")
+          .map((d) => dayMap[d])
+          .join("、")
+      }
+
+      // 更新统计信息
+      function updateStats() {
+        document.getElementById("totalFlights").textContent =
+          filteredData.length
+        document.getElementById("nightFlights").textContent =
+          filteredData.filter((f) => f.is_night).length
+        document.getElementById("dayFlights").textContent = filteredData.filter(
+          (f) => !f.is_night
+        ).length
+      }
+
+      // 导出结果
+      function exportResults() {
+        const csvContent = [
+          [
+            "航空公司",
+            "航班号",
+            "出发城市",
+            "到达城市",
+            "出发时间",
+            "到达时间",
+            "运营日期",
+            "产品类型",
+            "航班类型"
+          ],
+          ...filteredData.map((flight) => [
+            flight.airline,
+            flight.flight_number,
+            flight.departure,
+            flight.destination,
+            flight.departure_time,
+            flight.arrival_time,
+            formatOperatingDays(flight.days),
+            flight.product_type,
+            flight.is_night ? "红眼航班" : "日间航班"
+          ])
+        ]
+          .map((row) => row.join(","))
+          .join("\n")
+
+        const blob = new Blob(["\ufeff" + csvContent], {
+          type: "text/csv;charset=utf-8;"
+        })
+        const link = document.createElement("a")
+        link.href = URL.createObjectURL(blob)
+        link.download = `航班查询结果_${new Date().toLocaleDateString()}.csv`
+        link.click()
+      }
+
+      // 页面加载完成后初始化
+      window.onload = function () {
+        // 自动加载在线数据
+        loadFlightData()
+
+        // 备用：提供文件输入框让用户选择本地文件
+        const fileInput = document.createElement("input")
+        fileInput.type = "file"
+        fileInput.accept = ".json"
+        fileInput.style.display = "none"
+        fileInput.onchange = function (e) {
+          const file = e.target.files[0]
+          if (file) {
+            const reader = new FileReader()
+            reader.onload = function (e) {
+              try {
+                const data = JSON.parse(e.target.result)
+                flightData = data.flights
+                initializeFilters()
+                applyFilters()
+              } catch (error) {
+                alert("文件格式错误，请选择正确的JSON文件")
+              }
+            }
+            reader.readAsText(file)
+          }
+        }
+        document.body.appendChild(fileInput)
+      }
+    </script>
+  </body>
+</html>
