@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>航班搜索测试面板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .test-panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .panel-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .panel-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .panel-content {
+            padding: 24px;
+        }
+
+        .test-section {
+            margin-bottom: 32px;
+        }
+
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .test-card h3 {
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .test-card p {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .status-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .status-item {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .status-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .status-label {
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+
+        .console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            padding: 16px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .console-line {
+            margin: 2px 0;
+            white-space: pre-wrap;
+        }
+
+        .console-info { color: #3794ff; }
+        .console-success { color: #4ec9b0; }
+        .console-error { color: #f44747; }
+        .console-warning { color: #ffcc02; }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-panel">
+        <div class="panel-header">
+            <h1>🧪 航班搜索功能测试面板</h1>
+            <p>全面测试航班搜索功能的各项特性</p>
+        </div>
+
+        <div class="panel-content">
+            <!-- 状态面板 -->
+            <div class="status-panel"
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-value" id="totalTests">0</div>
+                        <div class="status-label">总测试数</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="passedTests" style="color: #28a745;">0</div>
+                        <div class="status-label">通过数</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="failedTests" style="color: #dc3545;">0</div>
+                        <div class="status-label">失败数</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="passRate">0%</div>
+                        <div class="status-label">通过率</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速操作 -->
+            <div class="test-section">
+                <h2>⚡ 快速操作</h2>
+                <div class="quick-actions">
+                    <button class="btn btn-success" onclick="runAllTests()">
+                        <span>🚀</span> 运行所有测试
+                    </button>
+                    <button class="btn btn-warning" onclick="clearResults()">
+                        <span>🗑️</span> 清空结果
+                    </button>
+                    <button class="btn" onclick="checkPageStatus()">
+                        <span>🔍</span> 检查页面状态
+                    </button>
+                    <button class="btn btn-danger" onclick="generateReport()">
+                        <span>📊</span> 生成报告
+                    </button>
+                </div>
+            </div>
+
+            <!-- 功能测试 -->
+            <div class="test-section">
+                <h2>🎯 功能测试</h2>
+                <div class="test-grid">
+                    <div class="test-card">
+                        <h3>城市搜索测试</h3>
+                        <p>测试城市搜索框的输入、下拉选择和筛选功能</p>
+                        <button class="btn" onclick="runTest('citySearch')">运行测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>行程类型切换</h3>
+                        <p>测试单程和往返模式的切换及数据正确性</p>
+                        <button class="btn" onclick="runTest('tripType')">运行测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>时间段筛选</h3>
+                        <p>测试凌晨、上午、下午、晚上的时间段筛选</p>
+                        <button class="btn" onclick="runTest('timeFilter')">运行测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>2666可用筛选</h3>
+                        <p>测试2666产品类型的筛选和取消筛选</p>
+                        <button class="btn" onclick="runTest('filter2666')">运行测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>多条件组合</h3>
+                        <p>测试多个筛选条件同时应用的组合效果</p>
+                        <button class="btn" onclick="runTest('multipleFilters')">运行测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>边界情况</h3>
+                        <p>测试空搜索、无结果、特殊字符等边界情况</p>
+                        <button class="btn" onclick="runTest('edgeCases')">运行测试</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 性能测试 -->
+            <div class="test-section">
+                <h2>⚡ 性能测试</h2>
+                <div class="test-grid">
+                    <div class="test-card">
+                        <h3>加载性能</h3>
+                        <p>测试页面初始化和数据加载时间</p>
+                        <button class="btn" onclick="testLoadPerformance()">开始测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>筛选响应</h3>
+                        <p>测试各种筛选操作的响应时间</p>
+                        <button class="btn" onclick="testFilterPerformance()">开始测试</button>
+                    </div>
+                    <div class="test-card">
+                        <h3>内存监控</h3>
+                        <p>监控内存使用情况和潜在泄漏</p>
+                        <button class="btn" onclick="testMemoryUsage()">开始测试</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制台输出 -->
+            <div class="test-section">
+                <h2>🖥️ 控制台输出</h2>
+                <div class="console-output" id="consoleOutput">
+                    <div class="console-line console-info">测试面板已加载，准备开始测试...</div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn" onclick="clearConsole()">清空控制台</button>
+                    <button class="btn" onclick="exportConsole()">导出日志</button>
+                </div>
+            </div>
+
+            <!-- 功能特性 -->
+            <div class="test-section">
+                <h2>✅ 测试覆盖功能</h2>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">🔍</span>
+                        城市搜索框的输入和模糊匹配功能
+                    </li>
+                    <li>
+                        <span class="feature-icon">🎯</span>
+                        下拉选择列表的显示和选择功能
+                    </li>
+                    <li>
+                        <span class="feature-icon">🔄</span>
+                        单程/往返行程类型的切换逻辑
+                    </li>
+                    <li>
+                        <span class="feature-icon">⏰</span>
+                        时间段筛选（凌晨、上午、下午、晚上）
+                    </li>
+                    <li>
+                        <span class="feature-icon">✅</span>
+                        2666可用产品类型筛选
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        多条件组合筛选的正确性
+                    </li>
+                    <li>
+                        <span class="feature-icon">🛡️</span>
+                        边界情况和错误处理
+                    </li>
+                    <li>
+                        <span class="feature-icon">📈</span>
+                        数据一致性和状态管理
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 测试面板功能
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            details: []
+        };
+
+        // 更新状态显示
+        function updateStatus() {
+            document.getElementById('totalTests').textContent = testResults.total;
+            document.getElementById('passedTests').textContent = testResults.passed;
+            document.getElementById('failedTests').textContent = testResults.failed;
+
+            const passRate = testResults.total > 0 ? (testResults.passed / testResults.total * 100).toFixed(1) : 0;
+            document.getElementById('passRate').textContent = passRate + '%';
+            document.getElementById('progressFill').style.width = passRate + '%';
+        }
+
+        // 添加控制台输出
+        function addConsoleOutput(message, type = 'info') {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const line = document.createElement('div');
+            line.className = `console-line console-${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        // 运行所有测试
+        async function runAllTests() {
+            addConsoleOutput('开始运行所有测试...', 'info');
+            updateStatus();
+
+            if (window.opener && window.opener.FlightSearchTests) {
+                try {
+                    const results = await window.opener.FlightSearchTests.runAll();
+
+                    testResults = {
+                        total: results.total || 0,
+                        passed: results.passed || 0,
+                        failed: results.failed || 0,
+                        details: results.errors || []
+                    };
+
+                    updateStatus();
+                    addConsoleOutput(`测试完成！通过率: ${(results.passed / results.total * 100).toFixed(1)}%`,
+                                   results.failed === 0 ? 'success' : 'warning');
+                } catch (error) {
+                    addConsoleOutput(`测试运行失败: ${error.message}`, 'error');
+                }
+            } else {
+                addConsoleOutput('未找到主页面或测试运行器，请确保在主页面中加载了 test_runner.js', 'error');
+            }
+        }
+
+        // 运行特定测试
+        async function runTest(testName) {
+            addConsoleOutput(`开始运行测试: ${testName}...`, 'info');
+
+            if (window.opener && window.opener.FlightSearchTests) {
+                try {
+                    const result = await window.opener.FlightSearchTests.run(testName);
+                    addConsoleOutput(`测试 ${testName} 完成: ${result ? '通过' : '失败'}`,
+                                   result ? 'success' : 'error');
+                } catch (error) {
+                    addConsoleOutput(`测试 ${testName} 运行失败: ${error.message}`, 'error');
+                }
+            } else {
+                addConsoleOutput('未找到主页面或测试运行器', 'error');
+            }
+        }
+
+        // 检查页面状态
+        function checkPageStatus() {
+            addConsoleOutput('检查页面状态...', 'info');
+
+            if (window.opener) {
+                const status = {
+                    hasDepartureSearch: !!window.opener.document.getElementById('departureSearch'),
+                    hasDestinationSearch: !!window.opener.document.getElementById('destinationSearch'),
+                    hasFlightTable: !!window.opener.document.getElementById('flightTable'),
+                    hasTestRunner: !!window.opener.FlightSearchTests,
+                    flightCount: window.opener.document.querySelectorAll ?
+                        window.opener.document.querySelectorAll('#flightTableBody tr').length : 0
+                };
+
+                addConsoleOutput(`页面状态检查完成:`, 'info');
+                Object.entries(status).forEach(([key, value]) => {
+                    addConsoleOutput(`  ${key}: ${value}`, value ? 'success' : 'error');
+                });
+            } else {
+                addConsoleOutput('无法访问主页面', 'error');
+            }
+        }
+
+        // 清空结果
+        function clearResults() {
+            testResults = { total: 0, passed: 0, failed: 0, details: [] };
+            updateStatus();
+            addConsoleOutput('测试结果已清空', 'info');
+        }
+
+        // 清空控制台
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            addConsoleOutput('控制台已清空', 'info');
+        }
+
+        // 导出控制台
+        function exportConsole() {
+            const consoleContent = document.getElementById('consoleOutput').textContent;
+            const blob = new Blob([consoleContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `flight_search_test_log_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            addConsoleOutput('控制台日志已导出', 'success');
+        }
+
+        // 生成报告
+        function generateReport() {
+            addConsoleOutput('生成测试报告...', 'info');
+            // 这里可以添加更复杂的报告生成功能
+            addConsoleOutput('测试报告功能开发中...', 'warning');
+        }
+
+        // 性能测试函数
+        async function testLoadPerformance() {
+            addConsoleOutput('开始测试加载性能...', 'info');
+            // 这里可以添加性能测试逻辑
+            addConsoleOutput('性能测试功能开发中...', 'warning');
+        }
+
+        async function testFilterPerformance() {
+            addConsoleOutput('开始测试筛选响应性能...', 'info');
+            // 这里可以添加性能测试逻辑
+            addConsoleOutput('性能测试功能开发中...', 'warning');
+        }
+
+        async function testMemoryUsage() {
+            addConsoleOutput('开始监控内存使用...', 'info');
+            // 这里可以添加内存监控逻辑
+            addConsoleOutput('内存监控功能开发中...', 'warning');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            addConsoleOutput('测试面板已加载', 'success');
+            updateStatus();
+
+            // 自动检查页面状态
+            setTimeout(checkPageStatus, 1000);
+        });
+    </script>
+</body>
+</html>

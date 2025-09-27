@@ -358,21 +358,18 @@
                   <button
                     class="time-filter-btn active px-3 py-2 text-xs rounded-full border-2 border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 font-medium"
                     data-time="all"
-                    onclick="selectTimeFilter('all')"
                   >
                     全部时段
                   </button>
                   <button
                     class="time-filter-btn px-3 py-2 text-xs rounded-full border-2 border-orange-300 text-orange-700 hover:border-orange-500 hover:bg-orange-50 transition-all duration-200 font-medium"
                     data-time="night"
-                    onclick="selectTimeFilter('night')"
                   >
                     <i class="iconfont icon-night mr-1"></i>晚上 18:00-24:00
                   </button>
                   <button
                     class="time-filter-btn px-3 py-2 text-xs rounded-full border-2 border-purple-300 text-purple-700 hover:border-purple-500 hover:bg-purple-50 transition-all duration-200 font-medium"
                     data-time="early"
-                    onclick="selectTimeFilter('early')"
                   >
                     <i class="iconfont icon-early mr-1"></i>凌晨 00:00-06:00
                   </button>
@@ -393,14 +390,13 @@
                   <button
                     class="availability-filter-btn px-3 py-2 text-xs rounded-full border-2 border-green-300 text-green-700 hover:border-green-500 hover:bg-green-50 transition-all duration-200 font-medium"
                     data-availability="2666"
-                    onclick="toggleAvailabilityFilter('2666')"
                   >
                     <i class="iconfont icon-available mr-1"></i>2666可用
                   </button>
                   <select
                     id="segmentFilter"
                     class="px-3 py-2 text-xs border-2 border-gray-300 rounded-full focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 bg-white font-medium"
-                    onchange="selectSegmentFilter(this.value)"
+                    data-filter="segment"
                   >
                     <option value="">全部航段</option>
                     <option value="1">1航段</option>
@@ -975,27 +971,36 @@
     </div>
 
     <script>
-      let flightData = []
-      let filteredData = []
-      let originalFilteredData = [] // 保存原始筛选结果，用于城市搜索
-      let filters = {
+      // 数据状态管理 - 简化架构
+      let flightData = []           // 原始航班数据
+      let currentFilters = {        // 当前所有筛选条件
+        // 基础筛选
         airline: "",
         departure: "",
         destination: "",
         departureProvince: "",
         destinationProvince: "",
         flightNumber: "",
-        productType: "",
+        // 航班类型
         nightFlight: false,
         dayFlight: false,
+        // 时间筛选
         departureTime: "",
         operatingDays: [],
-        timeSlot: "all",
+        // 快捷筛选
         quickTimeFilter: "全部时段",
         tripType: "单程",
         available2666: false,
-        segment: "all"
-      } // 全局筛选条件对象
+        segment: "",
+        // 城市搜索（搜索框输入）
+        citySearch: {
+          departure: "",
+          destination: ""
+        }
+      }
+      let displayData = []          // 当前显示的数据
+      let filterCache = new Map()   // 筛选结果缓存
+      let lastFilterHash = ""       // 上次筛选哈希
 
       // 加载航班数据
       async function loadFlightData() {
@@ -1050,9 +1055,7 @@
               </div>
             `
           } else {
-            document.getElementById(
-              "flightTableBody"
-            ).innerHTML = `<tr><td colspan="9" class="no-results">数据加载失败: ${error.message}<br><br>可能的原因：<br>1. 本地文件 flights_data.json 不存在<br>2. 文件格式错误<br>3. 文件读取权限问题<br><br><button class="btn-primary" onclick="loadFlightData()">重试</button></td></tr>`
+            document.getElementById("flightTableBody").innerHTML = `<tr><td colspan="9" class="no-results">数据加载失败: ${error.message}<br><br>可能的原因：<br>1. 本地文件 flights_data.json 不存在<br>2. 文件格式错误<br>3. 文件读取权限问题<br><br><button class="btn-primary" onclick="loadFlightData()">重试</button></td></tr>`
           }
         }
       }
@@ -1257,9 +1260,8 @@
         }
       }
 
-      // 筛选结果缓存
-      let filterCache = new Map()
-      let lastFilterHash = ""
+      // 筛选结果缓存已在上方声明
+      // lastFilterHash已在上方声明
 
       // 生成筛选条件哈希值
       function generateFilterHash(filters) {
@@ -1268,32 +1270,28 @@
 
       // 行程类型筛选处理函数
       function applyTripTypeFilter(flights, tripType) {
+        // 创建数据副本，避免污染原始数据
+        const workingData = flights.map(flight => {
+          // 清除之前的方向标记，创建干净的数据副本
+          const cleanFlight = { ...flight }
+          delete cleanFlight.tripDirection
+          return cleanFlight
+        })
+
         if (tripType === "单程") {
-          // 单程：根据出发地和目的地进行筛选
-          return flights.filter((flight) => {
-            // 如果设置了出发地筛选条件，检查是否匹配
-            if (filters.departure && flight.departure !== filters.departure) {
-              return false
-            }
-            // 如果设置了目的地筛选条件，检查是否匹配
-            if (
-              filters.destination &&
-              flight.destination !== filters.destination
-            ) {
-              return false
-            }
-            return true
-          })
+          // 单程：直接返回清理后的数据，不添加任何标记
+          console.log(`单程筛选：返回 ${workingData.length} 个航班`)
+          return workingData
         } else if (tripType === "往返") {
           // 往返：找到所有可以组成往返的航班对
           const roundtripFlights = []
           const processedFlights = new Set()
 
-          flights.forEach((outboundFlight) => {
+          workingData.forEach((outboundFlight) => {
             if (processedFlights.has(outboundFlight.flight_number)) return
 
             // 查找对应的返程航班
-            const returnFlights = flights.filter(
+            const returnFlights = workingData.filter(
               (returnFlight) =>
                 returnFlight.departure === outboundFlight.destination &&
                 returnFlight.destination === outboundFlight.departure &&
@@ -1320,15 +1318,75 @@
               roundtripFlights.length
             } 个航班`
           )
+
+          // 如果当前有城市搜索条件，需要进一步筛选
+          const departureCity = currentFilters.departure || document.getElementById("departure")?.value
+          const destinationCity = currentFilters.destination || document.getElementById("destination")?.value
+
+          if (departureCity || destinationCity) {
+            console.log(`应用城市筛选条件 - 出发地: ${departureCity}, 目的地: ${destinationCity}`)
+            return roundtripFlights.filter(flight => {
+              if (departureCity && flight.departure !== departureCity) return false
+              if (destinationCity && flight.destination !== destinationCity) return false
+              return true
+            })
+          }
+
           return roundtripFlights
         }
 
-        return flights
+        return workingData
       }
 
-      // 应用筛选
+      // 应用筛选 - 简化版，统一处理所有筛选条件
       function applyFilters() {
-        // 安全获取DOM元素值的辅助函数
+        console.log("=== 应用筛选 ===")
+
+        // 1. 收集所有筛选条件
+        collectFilterConditions()
+
+        // 2. 生成筛选哈希用于缓存
+        const filterHash = generateFilterHash(currentFilters)
+
+        // 3. 检查缓存
+        if (filterHash === lastFilterHash && filterCache.has(filterHash)) {
+          displayData = filterCache.get(filterHash)
+          console.log("使用缓存结果，显示数据:", displayData.length, "条")
+          displayResults()
+          return
+        }
+
+        // 4. 从原始数据开始筛选
+        let filteredFlights = [...flightData]
+
+        // 5. 应用基础筛选条件
+        filteredFlights = applyBasicFilters(filteredFlights)
+
+        // 6. 应用行程类型筛选
+        if (currentFilters.tripType === "往返") {
+          filteredFlights = applyTripTypeFilter(filteredFlights, "往返")
+        }
+
+        // 7. 应用城市搜索（搜索框输入）
+        filteredFlights = applyCitySearchFilter(filteredFlights)
+
+        // 8. 缓存结果
+        lastFilterHash = filterHash
+        if (filterCache.size > 50) {
+          const firstKey = filterCache.keys().next().value
+          filterCache.delete(firstKey)
+        }
+        filterCache.set(filterHash, filteredFlights)
+
+        // 9. 更新显示数据
+        displayData = filteredFlights
+
+        console.log(`筛选完成: ${flightData.length} → ${displayData.length} 条`)
+        displayResults()
+      }
+
+      // 收集所有筛选条件
+      function collectFilterConditions() {
         const safeGetValue = (id, defaultValue = "") => {
           const element = document.getElementById(id)
           return element ? element.value : defaultValue
@@ -1339,25 +1397,24 @@
           return element ? element.checked : defaultValue
         }
 
-        // 更新全局筛选条件对象
-        filters = {
+        // 更新当前筛选条件
+        currentFilters = {
+          // 基础筛选
           airline: safeGetValue("airline"),
           departure: safeGetValue("departure"),
           destination: safeGetValue("destination"),
           departureProvince: safeGetValue("departureProvince"),
           destinationProvince: safeGetValue("destinationProvince"),
           flightNumber: safeGetValue("flightNumber").toUpperCase(),
-          productType: "", // 产品类型通过2666可用按钮处理
+          // 航班类型
           nightFlight: safeGetChecked("nightFlight"),
           dayFlight: safeGetChecked("dayFlight"),
+          // 时间筛选
           departureTime: safeGetValue("departureTime"),
           operatingDays: Array.from(
             document.querySelectorAll(".day-checkbox:checked")
           ).map((cb) => cb.value),
-          timeSlot:
-            document.querySelector(".time-slot-btn.active")?.dataset.timeSlot ||
-            "all",
-          // 新的筛选条件
+          // 快捷筛选
           quickTimeFilter:
             document.querySelector(".time-filter-btn.active")?.textContent ||
             "全部时段",
@@ -1366,180 +1423,90 @@
             "单程",
           available2666:
             document
-              .getElementById("available2666")
+              .querySelector('[data-availability="2666"]')
               ?.classList.contains("active") || false,
-          segment: safeGetValue("segmentSelect", "all")
+          segment: safeGetValue("segmentFilter"),
+          // 城市搜索（搜索框输入）
+          citySearch: {
+            departure: safeGetValue("departureSearch").trim().toLowerCase(),
+            destination: safeGetValue("destinationSearch").trim().toLowerCase()
+          }
         }
 
-        // 调试信息：显示当前筛选条件
-        console.log("=== 筛选条件调试信息 ===")
-        console.log("筛选条件:", filters)
-        console.log("原始数据总数:", flightData.length)
+        console.log("当前筛选条件:", currentFilters)
+      }
 
-        // 性能优化：检查筛选条件是否有变化
-        const currentFilterHash = generateFilterHash(filters)
-        if (
-          currentFilterHash === lastFilterHash &&
-          filterCache.has(currentFilterHash)
-        ) {
-          // 使用缓存结果
-          filteredData = filterCache.get(currentFilterHash)
-          originalFilteredData = [...filteredData]
-          console.log("使用缓存结果，筛选后数据:", filteredData.length, "条")
-          displayResults()
-          return
-        }
-
-        // 记录当前筛选条件哈希
-        lastFilterHash = currentFilterHash
-
-        filteredData = flightData.filter((flight) => {
+      // 应用基础筛选条件
+      function applyBasicFilters(flights) {
+        return flights.filter(flight => {
           // 基础筛选
-          if (filters.airline && flight.airline !== filters.airline)
-            return false
-          if (filters.departure && flight.departure !== filters.departure)
-            return false
-          if (filters.destination && flight.destination !== filters.destination)
-            return false
-          if (
-            filters.departureProvince &&
-            flight.departure_province !== filters.departureProvince
-          )
-            return false
-          if (
-            filters.destinationProvince &&
-            flight.destination_province !== filters.destinationProvince
-          )
-            return false
-          if (
-            filters.flightNumber &&
-            !flight.flight_number.includes(filters.flightNumber)
-          )
-            return false
-          // 产品类型筛选已通过2666可用按钮处理
+          if (currentFilters.airline && flight.airline !== currentFilters.airline) return false
+          if (currentFilters.departure && flight.departure !== currentFilters.departure) return false
+          if (currentFilters.destination && flight.destination !== currentFilters.destination) return false
+          if (currentFilters.departureProvince && flight.departure_province !== currentFilters.departureProvince) return false
+          if (currentFilters.destinationProvince && flight.destination_province !== currentFilters.destinationProvince) return false
+          if (currentFilters.flightNumber && !flight.flight_number.includes(currentFilters.flightNumber)) return false
 
           // 航班类型筛选
-          if (filters.nightFlight && !flight.is_night) return false
-          if (filters.dayFlight && flight.is_night) return false
+          if (currentFilters.nightFlight && !flight.is_night) return false
+          if (currentFilters.dayFlight && flight.is_night) return false
 
           // 起飞时间筛选
-          if (filters.departureTime) {
+          if (currentFilters.departureTime) {
             const hour = parseInt(flight.departure_time.split(":")[0])
-            switch (filters.departureTime) {
-              case "early":
-                if (hour >= 6) return false
-                break
-              case "morning":
-                if (hour < 6 || hour >= 12) return false
-                break
-              case "afternoon":
-                if (hour < 12 || hour >= 18) return false
-                break
-              case "evening":
-                if (hour < 18) return false
-                break
-            }
-          }
-
-          // 时间段筛选
-          if (filters.timeSlot && filters.timeSlot !== "all") {
-            const hour = parseInt(flight.departure_time.split(":")[0])
-            switch (filters.timeSlot) {
-              case "dawn":
-                if (hour < 0 || hour >= 8) return false
-                break
-              case "morning":
-                if (hour < 8 || hour >= 12) return false
-                break
-              case "afternoon":
-                if (hour < 12 || hour >= 18) return false
-                break
-              case "evening":
-                if (hour < 18 || hour >= 20) return false
-                break
-              case "night":
-                if (hour < 20 && hour >= 8) return false
-                break
+            switch (currentFilters.departureTime) {
+              case "early": if (hour >= 6) return false; break
+              case "morning": if (hour < 6 || hour >= 12) return false; break
+              case "afternoon": if (hour < 12 || hour >= 18) return false; break
+              case "evening": if (hour < 18) return false; break
             }
           }
 
           // 快捷时间段筛选
-          if (
-            filters.quickTimeFilter &&
-            filters.quickTimeFilter !== "全部时段"
-          ) {
+          if (currentFilters.quickTimeFilter !== "全部时段") {
             const hour = parseInt(flight.departure_time.split(":")[0])
-            switch (filters.quickTimeFilter) {
-              case "凌晨":
-                if (hour < 0 || hour >= 6) return false
-                break
-              case "晚上":
-                if (hour < 18 || hour >= 24) return false
-                break
+            switch (currentFilters.quickTimeFilter) {
+              case "凌晨": if (hour < 0 || hour >= 6) return false; break
+              case "晚上": if (hour < 18 || hour >= 24) return false; break
             }
           }
 
           // 2666可用状态筛选
-          if (filters.available2666) {
-            // 检查product_type字段是否包含2666
-            if (!flight.product_type || !flight.product_type.includes("2666"))
-              return false
+          if (currentFilters.available2666) {
+            if (!flight.product_type || !flight.product_type.includes("2666")) return false
           }
 
-          // 航段筛选 - 数据中暂无segment字段，跳过此筛选
-          // if (filters.segment && filters.segment !== "all") {
-          //   if (flight.segment !== filters.segment) return false
-          // }
-
           // 运营日期筛选
-          if (filters.operatingDays.length > 0) {
-            const hasMatchingDay = filters.operatingDays.some((day) =>
-              flight.days.includes(day)
-            )
+          if (currentFilters.operatingDays.length > 0) {
+            const hasMatchingDay = currentFilters.operatingDays.some(day => flight.days.includes(day))
             if (!hasMatchingDay) return false
           }
 
-          // 行程类型筛选 - 暂时跳过，在后面单独处理
-          // 这里只进行基础筛选，行程类型筛选需要特殊处理
+          return true
+        })
+      }
+
+      // 应用城市搜索筛选（基于搜索框输入）
+      function applyCitySearchFilter(flights) {
+        const { departure, destination } = currentFilters.citySearch
+
+        if (!departure && !destination) return flights
+
+        return flights.filter(flight => {
+          if (departure) {
+            const departureMatch = flight.departure.toLowerCase().includes(departure) ||
+                                 flight.departure_province.toLowerCase().includes(departure)
+            if (!departureMatch) return false
+          }
+
+          if (destination) {
+            const destinationMatch = flight.destination.toLowerCase().includes(destination) ||
+                                   flight.destination_province.toLowerCase().includes(destination)
+            if (!destinationMatch) return false
+          }
 
           return true
         })
-
-        // 调试信息：显示筛选结果
-        console.log("筛选后数据:", filteredData.length, "条")
-        console.log(
-          "筛选通过率:",
-          ((filteredData.length / flightData.length) * 100).toFixed(1) + "%"
-        )
-        if (filteredData.length === 0) {
-          console.warn("⚠️ 筛选结果为空，请检查筛选条件是否过于严格")
-        }
-        console.log("=== 筛选调试信息结束 ===")
-
-        // 缓存筛选结果（限制缓存大小避免内存泄漏）
-        if (filterCache.size > 50) {
-          // 清理最旧的缓存项
-          const firstKey = filterCache.keys().next().value
-          filterCache.delete(firstKey)
-        }
-        filterCache.set(currentFilterHash, [...filteredData])
-
-        // 保存原始筛选结果
-        originalFilteredData = [...filteredData]
-
-        // 行程类型筛选处理
-        if (filters.tripType) {
-          filteredData = applyTripTypeFilter(filteredData, filters.tripType)
-        }
-
-        // 如果有城市搜索，应用城市筛选
-        const departureCity = safeGetValue("departureCity").trim()
-        const destinationCity = safeGetValue("destinationCity").trim()
-        if (departureCity || destinationCity) {
-          performCitySearch()
-        } else {
-          displayResults()
-        }
       }
 
       // 重置筛选
@@ -1570,8 +1537,8 @@
           .forEach((cb) => (cb.checked = false))
 
         // 清空城市搜索
-        safeReset("departureCity")
-        safeReset("destinationCity")
+        safeReset("departureSearch")
+        safeReset("destinationSearch")
 
         // 重置行程类型
         document.querySelectorAll(".trip-type-btn").forEach((btn) => {
@@ -1588,7 +1555,7 @@
         if (allTimeBtn) allTimeBtn.classList.add("active")
 
         // 重置2666可用状态
-        const available2666 = document.getElementById("available2666")
+        const available2666 = document.querySelector('[data-availability="2666"]')
         if (available2666) available2666.classList.remove("active")
 
         // 重置航段选择
@@ -1610,11 +1577,11 @@
       function displayResults() {
         const tbody = document.getElementById("flightTableBody")
 
-        if (filteredData.length === 0) {
+        if (displayData.length === 0) {
           tbody.innerHTML =
             '<tr><td colspan="9" class="px-6 py-12 text-center text-gray-500"><i class="iconfont icon-empty text-3xl mb-2 block"></i>没有找到符合条件的航班</td></tr>'
         } else {
-          tbody.innerHTML = filteredData
+          tbody.innerHTML = displayData
             .map(
               (flight) => `
                     <tr class="hover:bg-gray-50 transition-colors duration-200 ${
@@ -1700,8 +1667,8 @@
 
         const searchValue =
           type === "departure"
-            ? safeGetValue("departureCity").trim()
-            : safeGetValue("destinationCity").trim()
+            ? safeGetValue("departureSearch").trim()
+            : safeGetValue("destinationSearch").trim()
 
         if (!searchValue) {
           return cityName
@@ -1743,9 +1710,9 @@
 
       // 更新统计信息
       function updateStats() {
-        const total = filteredData.length
-        const nightFlights = filteredData.filter((f) => f.is_night).length
-        const dayFlights = filteredData.filter((f) => !f.is_night).length
+        const total = displayData.length
+        const nightFlights = displayData.filter((f) => f.is_night).length
+        const dayFlights = displayData.filter((f) => !f.is_night).length
         const availableFlights = Math.floor(total * 0.75) // 模拟2666可用航班数量
 
         // 安全更新统计数据
@@ -1783,23 +1750,23 @@
 
         const activeFilters = []
 
-        if (filters.airline) activeFilters.push("航空公司")
-        if (filters.departure) activeFilters.push("出发地")
-        if (filters.destination) activeFilters.push("到达地")
-        if (filters.nightFlight || filters.dayFlight)
+        if (currentFilters.airline) activeFilters.push("航空公司")
+        if (currentFilters.departure) activeFilters.push("出发地")
+        if (currentFilters.destination) activeFilters.push("到达地")
+        if (currentFilters.nightFlight || currentFilters.dayFlight)
           activeFilters.push("航班类型")
-        if (filters.timeSlot && filters.timeSlot !== "all")
-          activeFilters.push("时间段")
-        if (filters.departureTime) activeFilters.push("起飞时间")
-        if (filters.operatingDays && filters.operatingDays.length > 0)
+        if (currentFilters.departureTime) activeFilters.push("起飞时间")
+        if (currentFilters.operatingDays && currentFilters.operatingDays.length > 0)
           activeFilters.push("运营日期")
-        if (filters.available2666) activeFilters.push("2666可用")
-        if (filters.segment && filters.segment !== "all")
+        if (currentFilters.available2666) activeFilters.push("2666可用")
+        if (currentFilters.segment && currentFilters.segment !== "")
           activeFilters.push("航段")
-        if (filters.quickTimeFilter && filters.quickTimeFilter !== "全部时段")
+        if (currentFilters.quickTimeFilter && currentFilters.quickTimeFilter !== "全部时段")
           activeFilters.push("快捷时间")
-        if (filters.tripType && filters.tripType !== "单程")
+        if (currentFilters.tripType && currentFilters.tripType !== "单程")
           activeFilters.push("行程类型")
+        if (currentFilters.citySearch.departure || currentFilters.citySearch.destination)
+          activeFilters.push("城市搜索")
 
         if (activeFilters.length === 0) {
           filterStatus.innerHTML =
@@ -1874,61 +1841,85 @@
         link.click()
       }
 
-      // 新的筛选功能事件处理
-      function setupNewFilters() {
+      // 统一的事件处理 - 使用事件委托
+      function setupEventHandlers() {
         // 时间段筛选按钮事件
-        const timeFilterBtns = document.querySelectorAll(".time-filter-btn")
-        if (timeFilterBtns.length > 0) {
-          timeFilterBtns.forEach((btn) => {
-            btn.addEventListener("click", function () {
-              document
-                .querySelectorAll(".time-filter-btn")
-                .forEach((b) => b.classList.remove("active"))
-              this.classList.add("active")
-              applyFilters()
-            })
+        const timeFilterContainer = document.querySelector('.time-filter-btn')?.parentElement
+        if (timeFilterContainer) {
+          timeFilterContainer.addEventListener('click', function(e) {
+            const btn = e.target.closest('.time-filter-btn')
+            if (btn) {
+              e.preventDefault()
+              // 移除所有active状态
+              this.querySelectorAll('.time-filter-btn').forEach(b => b.classList.remove('active'))
+              // 添加当前active状态
+              btn.classList.add('active')
+              // 更新筛选条件并应用
+              selectTimeFilter(btn.dataset.time)
+            }
           })
         }
 
         // 行程类型按钮事件
-        const tripTypeBtns = document.querySelectorAll(".trip-type-btn")
-        if (tripTypeBtns.length > 0) {
-          tripTypeBtns.forEach((btn) => {
-            btn.addEventListener("click", function () {
-              document
-                .querySelectorAll(".trip-type-btn")
-                .forEach((b) => b.classList.remove("active"))
-              this.classList.add("active")
-              applyFilters()
-            })
+        const tripTypeContainer = document.querySelector('.trip-type-btn')?.parentElement
+        if (tripTypeContainer) {
+          tripTypeContainer.addEventListener('click', function(e) {
+            const btn = e.target.closest('.trip-type-btn')
+            if (btn) {
+              e.preventDefault()
+              // 移除所有active状态
+              this.querySelectorAll('.trip-type-btn').forEach(b => {
+                b.classList.remove('active', 'bg-blue-500', 'text-white', 'border-blue-500')
+                b.classList.add('border-gray-300', 'text-gray-700')
+              })
+              // 添加当前active状态
+              btn.classList.add('active', 'bg-blue-500', 'text-white', 'border-blue-500')
+              btn.classList.remove('border-gray-300', 'text-gray-700')
+              // 应用行程类型筛选
+              selectTripType(btn.dataset.type)
+            }
           })
         }
 
-        // 2666可用状态按钮事件
-        const available2666Btn = document.getElementById("available2666")
-        if (available2666Btn) {
-          available2666Btn.addEventListener("click", function () {
-            this.classList.toggle("active")
-            applyFilters()
+        // 2666可用按钮事件
+        const availabilityBtn = document.querySelector('[data-availability="2666"]')
+        if (availabilityBtn) {
+          availabilityBtn.addEventListener('click', function(e) {
+            e.preventDefault()
+            toggleAvailabilityFilter('2666')
           })
         }
 
         // 航段选择事件
-        const segmentSelect = document.getElementById("segmentSelect")
+        const segmentSelect = document.getElementById('segmentFilter')
         if (segmentSelect) {
-          segmentSelect.addEventListener("change", function () {
-            applyFilters()
+          segmentSelect.addEventListener('change', function() {
+            selectSegmentFilter(this.value)
           })
         }
 
         // 城市搜索框事件
-        const departureCity = document.getElementById("departureCity")
-        const destinationCity = document.getElementById("destinationCity")
-        if (departureCity) {
-          departureCity.addEventListener("input", performCitySearch)
+        const departureSearch = document.getElementById('departureSearch')
+        const destinationSearch = document.getElementById('destinationSearch')
+
+        if (departureSearch) {
+          departureSearch.addEventListener('input', function() {
+            // 延迟执行，避免频繁筛选
+            clearTimeout(this.searchTimeout)
+            this.searchTimeout = setTimeout(() => {
+              performCitySearch()
+            }, 300)
+          })
         }
-        if (destinationCity) {
-          destinationCity.addEventListener("input", performCitySearch)
+
+        if (destinationSearch) {
+          destinationSearch.addEventListener('input', function() {
+            // 延迟执行，避免频繁筛选
+            clearTimeout(this.searchTimeout)
+            this.searchTimeout = setTimeout(() => {
+              performCitySearch()
+            }, 300)
+          })
         }
       }
 
@@ -1937,8 +1928,8 @@
         // 自动加载在线数据
         loadFlightData()
 
-        // 设置新的筛选功能事件
-        setupNewFilters()
+        // 设置统一的事件处理
+        setupEventHandlers()
 
         // 备用：提供文件输入框让用户选择本地文件
         const fileInput = document.createElement("input")
@@ -1965,176 +1956,103 @@
         document.body.appendChild(fileInput)
       }
 
-      // 新的城市搜索功能
-      function performCitySearch() {
-        const safeGetValue = (id, defaultValue = "") => {
-          const element = document.getElementById(id)
-          return element ? element.value : defaultValue
-        }
-
-        const departureCity = safeGetValue("departureCity").trim().toLowerCase()
-        const destinationCity = safeGetValue("destinationCity")
-          .trim()
-          .toLowerCase()
-        const searchResultsInfo = document.getElementById("searchResultsInfo")
-
-        if (!departureCity && !destinationCity) {
-          // 如果搜索框都为空，显示原始筛选结果
-          filteredData = [...originalFilteredData]
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
-              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
-              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
-            </div>
-          `
-          displayResults()
-          return
-        }
-
-        // 在原始筛选结果中进行城市搜索
-        const cityFilteredData = originalFilteredData.filter((flight) => {
-          let departureMatch = true
-          let destinationMatch = true
-
-          if (departureCity) {
-            departureMatch =
-              flight.departure.toLowerCase().includes(departureCity) ||
-              flight.departure_province.toLowerCase().includes(departureCity)
-          }
-
-          if (destinationCity) {
-            destinationMatch =
-              flight.destination.toLowerCase().includes(destinationCity) ||
-              flight.destination_province
-                .toLowerCase()
-                .includes(destinationCity)
-          }
-
-          return departureMatch && destinationMatch
-        })
-
-        filteredData = cityFilteredData
-
-        // 更新搜索结果信息
-        if (cityFilteredData.length > 0) {
-          let searchInfo = []
-          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
-          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
-
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 rounded-xl border border-green-100 shadow-sm">
-              <i class="iconfont icon-success text-green-500 text-xl"></i>
-              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
-                " → "
-              )} | 找到 ${cityFilteredData.length} 个航班</span>
-            </div>
-          `
-        } else {
-          let searchInfo = []
-          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
-          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
-
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
-              <i class="iconfont icon-warning text-red-500 text-xl"></i>
-              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
-                " → "
-              )} | 未找到相关航班，请尝试其他城市</span>
-            </div>
-          `
-        }
-
-        displayResults()
-      }
-
-      // 清空城市搜索
-      function clearCitySearch() {
-        const safeReset = (id, value = "") => {
-          const element = document.getElementById(id)
-          if (element) element.value = value
-        }
-
-        safeReset("departureCity")
-        safeReset("destinationCity")
-
-        // 安全更新搜索结果信息
-        const searchResultsInfo = document.getElementById("searchResultsInfo")
-        if (searchResultsInfo) {
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
-              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
-              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
-            </div>
-          `
-        }
-
-        // 恢复到原始筛选结果
-        filteredData = [...originalFilteredData]
-        displayResults()
-      }
-
-      // 出发城市搜索功能
-      function performDepartureSearch() {
-        const departureInput = document.getElementById("departureSearch")
-        if (!departureInput) return
-
-        const searchValue = departureInput.value.trim().toLowerCase()
-        performCitySearch()
-      }
-
-      // 目的地城市搜索功能
-      function performDestinationSearch() {
-        const destinationInput = document.getElementById("destinationSearch")
-        if (!destinationInput) return
-
-        const searchValue = destinationInput.value.trim().toLowerCase()
-        performCitySearch()
-      }
-
-      // 清空出发城市搜索
-      function clearDepartureSearch() {
-        const departureInput = document.getElementById("departureSearch")
-        if (departureInput) {
-          departureInput.value = ""
-          performCitySearch()
-        }
-      }
-
-      // 清空目的地城市搜索
-      function clearDestinationSearch() {
-        const destinationInput = document.getElementById("destinationSearch")
-        if (destinationInput) {
-          destinationInput.value = ""
-          performCitySearch()
-        }
-      }
 
       // 行程类型选择功能
       function selectTripType(type) {
-        // 移除所有按钮的active状态
-        document.querySelectorAll(".trip-type-btn").forEach((btn) => {
-          btn.classList.remove("active")
-          btn.classList.remove("bg-blue-500", "text-white", "border-blue-500")
-          btn.classList.add("border-gray-300", "text-gray-700")
-        })
+        try {
+          // 移除所有按钮的active状态
+          document.querySelectorAll(".trip-type-btn").forEach((btn) => {
+            btn.classList.remove("active")
+            btn.classList.remove("bg-blue-500", "text-white", "border-blue-500")
+            btn.classList.add("border-gray-300", "text-gray-700")
+          })
 
-        // 为当前选中的按钮添加active状态
-        const selectedBtn = document.querySelector(`[data-type="${type}"]`)
-        if (selectedBtn) {
-          selectedBtn.classList.add("active")
-          selectedBtn.classList.remove("border-gray-300", "text-gray-700")
-          selectedBtn.classList.add(
-            "bg-blue-500",
-            "text-white",
-            "border-blue-500"
-          )
+          // 为当前选中的按钮添加active状态
+          const selectedBtn = document.querySelector(`[data-type="${type}"]`)
+          if (selectedBtn) {
+            selectedBtn.classList.add("active")
+            selectedBtn.classList.remove("border-gray-300", "text-gray-700")
+            selectedBtn.classList.add(
+              "bg-blue-500",
+              "text-white",
+              "border-blue-500"
+            )
+          }
+
+          // 获取新的行程类型
+          const newTripType = type === "round-trip" ? "往返" : "单程"
+          const oldTripType = currentFilters.tripType
+
+          // 更新筛选条件
+          currentFilters.tripType = newTripType
+
+          console.log(`行程类型切换：${oldTripType || '无'} → ${newTripType}`)
+
+          // 确保基础数据存在
+          if (!flightData || flightData.length === 0) {
+            console.warn("基础数据不存在，重新应用基础筛选")
+            applyFilters()
+            return
+          }
+
+          // 基于干净的基础数据应用新的行程类型筛选
+          if (newTripType !== "单程") {
+            // 往返模式：基于基础数据重新计算往返航班
+            filteredData = applyTripTypeFilter(flightData, newTripType)
+          } else {
+            // 单程模式：直接恢复基础数据
+            filteredData = [...flightData]
+          }
+
+          // 如果当前有城市搜索，需要再次应用城市搜索
+          const departureSearchValue = document.getElementById("departureSearch")?.value.trim().toLowerCase()
+          const destinationSearchValue = document.getElementById("destinationSearch")?.value.trim().toLowerCase()
+
+          if (departureSearchValue || destinationSearchValue) {
+            console.log(`行程类型切换后应用城市搜索 - 出发: ${departureSearchValue}, 目的地: ${destinationSearchValue}`)
+            // 在行程类型筛选结果上应用城市搜索
+            filteredData = filteredData.filter(flight => {
+              let departureMatch = true
+              let destinationMatch = true
+
+              if (departureSearchValue) {
+                departureMatch = flight.departure.toLowerCase().includes(departureSearchValue) ||
+                                flight.departure_province.toLowerCase().includes(departureSearchValue)
+              }
+
+              if (destinationSearchValue) {
+                destinationMatch = flight.destination.toLowerCase().includes(destinationSearchValue) ||
+                                  flight.destination_province.toLowerCase().includes(destinationSearchValue)
+              }
+
+              return departureMatch && destinationMatch
+            })
+          }
+
+          // 更新显示
+          displayResults()
+
+          // 更新搜索结果信息
+          const searchResultsInfo = document.getElementById("searchResultsInfo")
+          if (searchResultsInfo) {
+            const departureInput = document.getElementById("departureSearch")
+            const destinationInput = document.getElementById("destinationSearch")
+            const hasSearch = departureInput?.value.trim() || destinationInput?.value.trim()
+
+            if (!hasSearch) {
+              searchResultsInfo.innerHTML = `
+                <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+                  <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+                  <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+                </div>
+              `
+            }
+          }
+        } catch (error) {
+          console.error("行程类型切换出错:", error)
+          // 出错时重新应用全部筛选
+          applyFilters()
         }
-
-        // 更新筛选条件
-        filters.tripType = type === "round-trip" ? "往返" : "单程"
-
-        // 应用筛选
-        applyFilters()
       }
 
       // 时间筛选功能
@@ -2155,7 +2073,7 @@
         }
 
         // 更新筛选条件
-        filters.quickTimeFilter =
+        currentFilters.quickTimeFilter =
           timeType === "all"
             ? "全部时段"
             : timeType === "night"
@@ -2176,11 +2094,11 @@
         if (btn.classList.contains("active")) {
           btn.classList.remove("active", "bg-green-500", "text-white")
           btn.classList.add("border-green-300", "text-green-700")
-          filters.available2666 = false
+          currentFilters.available2666 = false
         } else {
           btn.classList.add("active", "bg-green-500", "text-white")
           btn.classList.remove("border-green-300", "text-green-700")
-          filters.available2666 = true
+          currentFilters.available2666 = true
         }
 
         // 应用筛选
@@ -2189,91 +2107,97 @@
 
       // 航段筛选功能
       function selectSegmentFilter(segment) {
-        filters.segment = segment || "all"
+        currentFilters.segment = segment || "all"
         applyFilters()
       }
 
-      // 城市搜索功能（统一处理出发和目的地搜索）
-      function performCitySearch() {
+      // 清除出发地搜索
+      function clearDepartureSearch() {
         const departureInput = document.getElementById("departureSearch")
+        if (departureInput) {
+          departureInput.value = ""
+          // 隐藏下拉列表
+          const dropdown = document.getElementById("departureSearchDropdown")
+          if (dropdown) {
+            dropdown.style.display = "none"
+          }
+          // 重新执行搜索
+          performCitySearch()
+        }
+      }
+
+      // 清除目的地搜索
+      function clearDestinationSearch() {
         const destinationInput = document.getElementById("destinationSearch")
-        const searchResultsInfo = document.getElementById("searchResultsInfo")
-
-        if (!departureInput || !destinationInput || !searchResultsInfo) {
-          console.warn("搜索相关DOM元素未找到")
-          return
+        if (destinationInput) {
+          destinationInput.value = ""
+          // 隐藏下拉列表
+          const dropdown = document.getElementById("destinationSearchDropdown")
+          if (dropdown) {
+            dropdown.style.display = "none"
+          }
+          // 重新执行搜索
+          performCitySearch()
         }
+      }
 
-        const departureCity = departureInput.value.trim().toLowerCase()
-        const destinationCity = destinationInput.value.trim().toLowerCase()
+      // 统一的城市搜索功能（处理出发和目的地搜索）
+      function performCitySearch() {
+        try {
+          const departureInput = document.getElementById("departureSearch")
+          const destinationInput = document.getElementById("destinationSearch")
+          const searchResultsInfo = document.getElementById("searchResultsInfo")
 
-        // 如果没有搜索条件，显示默认提示
-        if (!departureCity && !destinationCity) {
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
-              <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
-              <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
-            </div>
-          `
-          filteredData = [...originalFilteredData]
-          displayResults()
-          return
-        }
-
-        // 在原始筛选结果中进行城市搜索
-        const cityFilteredData = originalFilteredData.filter((flight) => {
-          let departureMatch = true
-          let destinationMatch = true
-
-          if (departureCity) {
-            departureMatch =
-              flight.departure.toLowerCase().includes(departureCity) ||
-              flight.departure_province.toLowerCase().includes(departureCity)
+          if (!departureInput || !destinationInput || !searchResultsInfo) {
+            console.warn("搜索相关DOM元素未找到")
+            return
           }
 
-          if (destinationCity) {
-            destinationMatch =
-              flight.destination.toLowerCase().includes(destinationCity) ||
-              flight.destination_province
-                .toLowerCase()
-                .includes(destinationCity)
+          const departureCity = departureInput.value.trim().toLowerCase()
+          const destinationCity = destinationInput.value.trim().toLowerCase()
+
+          // 更新当前筛选条件中的城市搜索
+          currentFilters.citySearch.departure = departureCity
+          currentFilters.citySearch.destination = destinationCity
+
+          // 如果没有搜索条件，显示默认提示
+          if (!departureCity && !destinationCity) {
+            searchResultsInfo.innerHTML = `
+              <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 rounded-xl border border-blue-100 shadow-sm">
+                <i class="iconfont icon-tips text-blue-500 text-xl animate-pulse"></i>
+                <span class="font-medium">选择出发城市和目的地城市，使用筛选条件精确查找航班 · 支持时间段、行程类型和航段筛选</span>
+              </div>
+            `
+            // 重新应用所有筛选条件
+            applyFilters()
+            return
           }
 
-          return departureMatch && destinationMatch
-        })
+          // 验证航班数据
+          if (!flightData || flightData.length === 0) {
+            searchResultsInfo.innerHTML = `
+              <div class="flex items-center gap-4 text-sm text-red-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
+                <i class="iconfont icon-warning text-red-500 text-xl"></i>
+                <span class="font-medium">⚠️ 航班数据未加载，无法执行搜索</span>
+              </div>
+            `
+            return
+          }
 
-        filteredData = cityFilteredData
-
-        // 更新搜索结果信息
-        if (cityFilteredData.length > 0) {
-          let searchInfo = []
-          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
-          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
-
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 rounded-xl border border-green-100 shadow-sm">
-              <i class="iconfont icon-success text-green-500 text-xl"></i>
-              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
-                " → "
-              )} | 找到 ${cityFilteredData.length} 个航班</span>
-            </div>
-          `
-        } else {
-          let searchInfo = []
-          if (departureCity) searchInfo.push(`出发: ${departureCity}`)
-          if (destinationCity) searchInfo.push(`目的地: ${destinationCity}`)
-
-          searchResultsInfo.innerHTML = `
-            <div class="flex items-center gap-4 text-sm text-gray-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
-              <i class="iconfont icon-warning text-red-500 text-xl"></i>
-              <span class="font-medium">🔍 搜索条件: ${searchInfo.join(
-                " → "
-              )} | 未找到相关航班，请尝试其他城市</span>
-            </div>
-          `
+          // 重新应用所有筛选条件（城市搜索会自动应用）
+          applyFilters()
+        } catch (error) {
+          console.error("城市搜索出错:", error)
+          const searchResultsInfo = document.getElementById("searchResultsInfo")
+          if (searchResultsInfo) {
+            searchResultsInfo.innerHTML = `
+              <div class="flex items-center gap-4 text-sm text-red-600 bg-gradient-to-r from-red-50 to-pink-50 px-6 py-4 rounded-xl border border-red-100 shadow-sm">
+                <i class="iconfont icon-warning text-red-500 text-xl"></i>
+                <span class="font-medium">⚠️ 搜索出错: ${error.message}</span>
+              </div>
+            `
+          }
         }
-
-        displayResults()
       }
 
       // 切换详细搜索面板
@@ -2547,5 +2471,9 @@
         ]
       }
     </script>
+    <!-- 测试运行器 -->
+    <script src="test_runner.js"></script>
+    <!-- 综合搜索测试 -->
+    <script src="test_search_comprehensive.js"></script>
   </body>
 </html>

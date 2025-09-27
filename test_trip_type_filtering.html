@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行程类型筛选测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .pass { color: green; }
+        .fail { color: red; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>行程类型筛选测试工具</h1>
+
+    <div class="test-section">
+        <h3>测试步骤：</h3>
+        <ol>
+            <li>在主页面的搜索框中输入出发城市和目的地城市</li>
+            <li>切换单程/往返行程类型</li>
+            <li>观察是否正确带上城市筛选条件</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h3>当前状态检测：</h3>
+        <div id="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>测试用例：</h3>
+        <button onclick="testCase1()">测试用例1：北京→上海，切换往返</button>
+        <button onclick="testCase2()">测试用例2：广州→深圳，切换单程</button>
+        <button onclick="testCase3()">测试用例3：清空搜索后切换</button>
+    </div>
+
+    <div class="test-section">
+        <h3>测试结果：</h3>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function checkStatus() {
+            const statusDiv = document.getElementById('status');
+
+            // 检查主页面的元素
+            const departureSearch = window.opener?.document.getElementById('departureSearch');
+            const destinationSearch = window.opener?.document.getElementById('destinationSearch');
+            const activeTripType = window.opener?.document.querySelector('.trip-type-btn.active');
+
+            let html = '<p>';
+            if (departureSearch) {
+                html += `出发城市搜索框: ${departureSearch.value || '空'}<br>`;
+            } else {
+                html += '出发城市搜索框: 未找到<br>';
+            }
+
+            if (destinationSearch) {
+                html += `目的地城市搜索框: ${destinationSearch.value || '空'}<br>`;
+            } else {
+                html += '目的地城市搜索框: 未找到<br>';
+            }
+
+            if (activeTripType) {
+                html += `当前行程类型: ${activeTripType.textContent}<br>`;
+            } else {
+                html += '当前行程类型: 未找到<br>';
+            }
+            html += '</p>';
+
+            statusDiv.innerHTML = html;
+        }
+
+        function testCase1() {
+            const results = document.getElementById('results');
+            const departureSearch = window.opener?.document.getElementById('departureSearch');
+            const destinationSearch = window.opener?.document.getElementById('destinationSearch');
+            const roundTripBtn = window.opener?.document.querySelector('[data-type="round-trip"]');
+
+            if (departureSearch && destinationSearch && roundTripBtn) {
+                // 设置搜索条件
+                departureSearch.value = '北京';
+                destinationSearch.value = '上海';
+                departureSearch.dispatchEvent(new Event('input'));
+
+                setTimeout(() => {
+                    // 切换到往返
+                    roundTripBtn.click();
+
+                    setTimeout(() => {
+                        checkStatus();
+                        results.innerHTML = '<p class="pass">测试用例1完成：已设置北京→上海并切换到往返模式</p>';
+                    }, 1000);
+                }, 500);
+            } else {
+                results.innerHTML = '<p class="fail">测试失败：无法获取主页面元素</p>';
+            }
+        }
+
+        function testCase2() {
+            const results = document.getElementById('results');
+            const departureSearch = window.opener?.document.getElementById('departureSearch');
+            const destinationSearch = window.opener?.document.getElementById('destinationSearch');
+            const oneWayBtn = window.opener?.document.querySelector('[data-type="one-way"]');
+
+            if (departureSearch && destinationSearch && oneWayBtn) {
+                // 设置搜索条件
+                departureSearch.value = '广州';
+                destinationSearch.value = '深圳';
+                departureSearch.dispatchEvent(new Event('input'));
+
+                setTimeout(() => {
+                    // 切换到单程
+                    oneWayBtn.click();
+
+                    setTimeout(() => {
+                        checkStatus();
+                        results.innerHTML = '<p class="pass">测试用例2完成：已设置广州→深圳并切换到单程模式</p>';
+                    }, 1000);
+                }, 500);
+            } else {
+                results.innerHTML = '<p class="fail">测试失败：无法获取主页面元素</p>';
+            }
+        }
+
+        function testCase3() {
+            const results = document.getElementById('results');
+            const departureSearch = window.opener?.document.getElementById('departureSearch');
+            const destinationSearch = window.opener?.document.getElementById('destinationSearch');
+            const roundTripBtn = window.opener?.document.querySelector('[data-type="round-trip"]');
+            const oneWayBtn = window.opener?.document.querySelector('[data-type="one-way"]');
+
+            if (departureSearch && destinationSearch && roundTripBtn && oneWayBtn) {
+                // 清空搜索条件
+                departureSearch.value = '';
+                destinationSearch.value = '';
+                departureSearch.dispatchEvent(new Event('input'));
+
+                setTimeout(() => {
+                    // 先切换到往返
+                    roundTripBtn.click();
+
+                    setTimeout(() => {
+                        // 再切换到单程
+                        oneWayBtn.click();
+
+                        setTimeout(() => {
+                            checkStatus();
+                            results.innerHTML = '<p class="pass">测试用例3完成：已清空搜索并切换行程类型</p>';
+                        }, 500);
+                    }, 500);
+                }, 500);
+            } else {
+                results.innerHTML = '<p class="fail">测试失败：无法获取主页面元素</p>';
+            }
+        }
+
+        // 定期更新状态
+        setInterval(checkStatus, 2000);
+        checkStatus();
+    </script>
+</body>
+</html>
